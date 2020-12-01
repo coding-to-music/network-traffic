@@ -1,6 +1,9 @@
 # network-traffic
 &nbsp;
 
+# What is using my port 2222 ????
+## On both my chromebooks
+
 # Good Articles
 
 How to check open ports in Linux using the CLI
@@ -29,8 +32,11 @@ ESET Bratislava, Slovak Republic Handles communication with agents, collecting a
 https://www.eset.com/int/business/remote-administrator/
 
 
+<p align="center">
+ <img width="600px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
+ 
 
-# Listening on port 2222
+
 ```bash
 sudo apt-get update
 
