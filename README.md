@@ -32,7 +32,7 @@ https://www.eset.com/int/business/remote-administrator/
 https://www.speedguide.net/port.php?port=2222
 
 <p align="center">
- <img width="600px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
  
 
 
