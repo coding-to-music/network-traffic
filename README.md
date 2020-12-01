@@ -34,8 +34,29 @@ https://www.speedguide.net/port.php?port=2222
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
  
+## ESET Linux proxy install instructions example, is this similar to what is running?
+### Example of an installation script from ESET
+https://help.eset.com/era_install/65/en-US/proxy_installation_linux.html
+```bash
+./proxy-linux-x86_64.sh \
+--db-hostname=10.1.179.28 \
+--db-name=era_6_db_proxy \
+--db-admin-username=sa \
+--db-admin-password=admin.1 \
+--db-user-username=tester \
+--db-user-password=Admin.1 \
+--db-port=1433 \
+--db-type="MS SQL Server" \
+--db-driver=MySQL \
+--skip-license \
+--hostname=10.1.179.30 \
+--port=2222 \
+--cert-path=/home/adminko/Desktop/proxy.pfx \
+--cert-auth-path=/home/adminko/Desktop/CA-server.der \
+--cert-password=root \
+```
 
-
+### How to install lsof
 ```bash
 sudo apt-get update
 
