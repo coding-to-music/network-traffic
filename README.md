@@ -6,31 +6,30 @@
 
 # Good Articles
 
-How to check open ports in Linux using the CLI
-
+### How to check open ports in Linux using the CLI
 https://www.cyberciti.biz/faq/how-to-check-open-ports-in-linux-using-the-cli/
 
-Linux Find Out Which Process Is Listening Upon a Port
+### Linux Find Out Which Process Is Listening Upon a Port
 https://www.cyberciti.biz/faq/what-process-has-open-linux-port/
 
-SpeedGuide.net Port 2222 Details
-https://www.speedguide.net/port.php?port=2222
-
-Wikipedia List_of_TCP_and_UDP_port_numbers Ports 2222-2226 ESET Remote administrator
+### Wikipedia List_of_TCP_and_UDP_port_numbers Ports 2222-2226 ESET Remote administrator
 https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
 
-Netcat - How to listen on a TCP port using IPv6 address? example port 2222
+### Netcat - How to listen on a TCP port using IPv6 address? example port 2222
 https://unix.stackexchange.com/questions/457670/netcat-how-to-listen-on-a-tcp-port-using-ipv6-address
 
-Recommends using ncat 
+### Recommends using ncat 
 https://packages.debian.org/buster/ncat
 
-But really prefers using socat
+### But really prefers using socat
 https://packages.debian.org/stretch/socat
 
-ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.
+### ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.
 https://www.eset.com/int/business/remote-administrator/
 
+
+### SpeedGuide.net Port 2222 Details
+https://www.speedguide.net/port.php?port=2222
 
 <p align="center">
  <img width="600px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
