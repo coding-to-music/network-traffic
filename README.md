@@ -30,18 +30,23 @@ https://www.eset.com/int/business/remote-administrator/
 
 
 # Listening on port 2222
+```bash
 sudo lsof -T | grep 2222
 
 netstat -tulpn
+```
 
 ### sudo lsof -T | grep 2222
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo lsof -T | grep 2222
 sshd        95                      root    3u     IPv4               2712       0t0     TCP *:2222
 sshd        95                      root    4u     IPv6               2720       0t0     TCP *:2222
 sshd       212                      root    3u     IPv4               6211       0t0     TCP penguin.lxd:2222->100.115.92.25:43998
 sshd       221                connorstom    3u     IPv4               6211       0t0     TCP penguin.lxd:2222->100.115.92.25:43998
+```
 
 ### netstat -tulpn
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ netstat -tulpn
 (Not all processes could be identified, non-owned process info
  will not be shown, you would have to be root to see it all.)
@@ -50,8 +55,10 @@ Proto Recv-Q Send-Q Local Address           Foreign Address         State       
 tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      -                   
 tcp6       0      0 :::2222                 :::*                    LISTEN      -                   
 udp        0      0 0.0.0.0:68              0.0.0.0:*                           -    
+```
 
 ### sudo netstat -atupen
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo netstat -atupen
 Active Internet connections (servers and established)
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name    
@@ -64,17 +71,20 @@ tcp        0      0 100.115.92.195:44958    151.101.116.133:443     ESTABLISHED 
 tcp        0      0 100.115.92.195:2222     100.115.92.25:34294     ESTABLISHED 0          6570       243/sshd: connorsto 
 tcp6       0      0 :::2222                 :::*                    LISTEN      0          3865       96/sshd             
 udp        0      0 0.0.0.0:68              0.0.0.0:*                           0          2345       69/dhclient         
-
+```
 
 ### sudo netstat -atupen | grep EST
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo netstat -atupen | grep EST
 tcp        0      0 100.115.92.195:44960    151.101.116.133:443     ESTABLISHED 1000       22243      379/code --type=uti 
 tcp        0      0 100.115.92.195:44962    151.101.116.133:443     ESTABLISHED 1000       22244      379/code --type=uti 
 tcp        0      0 100.115.92.195:40324    40.71.11.167:443        ESTABLISHED 1000       23274      379/code --type=uti 
 tcp        0      0 100.115.92.195:44958    151.101.116.133:443     ESTABLISHED 1000       22242      379/code --type=uti 
 tcp        0      0 100.115.92.195:2222     100.115.92.25:34294     ESTABLISHED 0          6570       243/sshd: connorsto 
+```
 
 ### sudo apt-get install whois
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo apt-get install whois
 Reading package lists... Done
 Building dependency tree       
@@ -93,8 +103,10 @@ Preparing to unpack .../archives/whois_5.4.3_amd64.deb ...
 Unpacking whois (5.4.3) ...
 Setting up whois (5.4.3) ...
 Processing triggers for man-db (2.8.5-2) ...
+```
 
 ### whois 100.115.92.25
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ whois 100.115.92.25 
 
 NetRange:       100.64.0.0 - 100.127.255.255
@@ -115,14 +127,18 @@ Comment:        This block was assigned by the IETF in the Best Current Practice
 Comment:        RFC 6598 which can be found at: 
 Comment:        http://tools.ietf.org/html/rfc6598
 Ref:            https://rdap.arin.net/registry/ip/100.64.0.0
+```
 
 ### sudo ss -tunp
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo ss -tunp
 Netid                      State                      Recv-Q                      Send-Q                                            Local Address:Port                                             Peer Address:Port                                                                          
 tcp                        ESTAB                      0                           0                                                100.115.92.195:40364                                            40.71.11.167:443                        users:(("code",pid=379,fd=32))                     
 tcp                        ESTAB                      0                           0                                                100.115.92.195:2222                                            100.115.92.25:34294                      users:(("sshd",pid=258,fd=3),("sshd",pid=243,fd=3))
+```
 
 ### sudo lsof -nP -i
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo lsof -nP -i
 COMMAND  PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 dhclient  69       root    7u  IPv4   2345      0t0  UDP *:68 
@@ -132,17 +148,21 @@ sshd     243       root    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->10
 sshd     258 connorstom    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
 code     379 connorstom   32u  IPv4  39225      0t0  TCP 100.115.92.195:40364->40.71.11.167:443 (ESTABLISHED)
 code     515 connorstom   85u  IPv4  15581      0t0  TCP 127.0.0.1:42451 (LISTEN)
+```
 
 ### sudo lsof -nP -iTCP -sTCP:ESTABLISHED
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo lsof -nP -iTCP -sTCP:ESTABLISHED
 COMMAND PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 sshd    243       root    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
 sshd    258 connorstom    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
 code    379 connorstom   32u  IPv4  39225      0t0  TCP 100.115.92.195:40364->40.71.11.167:443 (ESTABLISHED)
+```
 
 ### sudo lsof -nP -iTCP -sTCP:LISTEN
+```bash
 connorstom@penguin:~/aprojects/br-build-site$ sudo lsof -nP -iTCP -sTCP:LISTEN
 COMMAND PID       USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 sshd     96       root    3u  IPv4   3856      0t0  TCP *:2222 (LISTEN)
 sshd     96       root    4u  IPv6   3865      0t0  TCP *:2222 (LISTEN)
-
+```
