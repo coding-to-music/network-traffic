@@ -505,8 +505,21 @@ sshd     255 connorstom    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->10
 
 ### Using wireshark, can filter on port and ip_address, can see vscode in the contents 
 ```bash
+// filters such as:
+tcp.port == 2222 || udp.port == 2222
 
+tcp contains 2222
+
+tcp contains vscode
+
+ip.addr == 100.115.92.25
 ```
 
+
+### can see vscode in the contents but turns out it is not port 2222 
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/vscode-wireshark.png?raw=true" align="center" alt="vscode in the contents" />
+
+### This is traffic leaving 2222 and going to the mystery ip address 
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/wireshark-port-2222.png?raw=true" align="center" alt="vscode in the contents" />
