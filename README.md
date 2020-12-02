@@ -457,3 +457,20 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 19.41 seconds
 ```
+
+
+### sudo apt-get install wireshark
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install wireshark
+
+// got this error: “couldnt run /usr/bin/dumpcap in child process
+
+sudo dpkg-reconfigure wireshark-common
+// answer Yes to letting non-supervisors use wireshark
+
+sudo chmod +x /usr/bin/dumpcap
+
+
+
+```
+
