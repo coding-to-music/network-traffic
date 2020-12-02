@@ -469,8 +469,44 @@ sudo dpkg-reconfigure wireshark-common
 // answer Yes to letting non-supervisors use wireshark
 
 sudo chmod +x /usr/bin/dumpcap
+```
 
+### After reboot, Check what ip address is using port 2222 
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -atupen | grep 2222
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      0          3664       97/sshd             
+tcp        0      0 100.115.92.195:2222     100.115.92.25:36440     ESTABLISHED 0          5074       245/sshd: connorsto 
+tcp6       0      0 :::2222                 :::*                    LISTEN      0          3666       97/sshd             
+connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -atupen
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name    
+tcp        0      0 127.0.0.1:40609         0.0.0.0:*               LISTEN      1000       11295      514/code            
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      0          3664       97/sshd             
+tcp        0      0 100.115.92.195:35394    151.101.116.133:443     ESTABLISHED 1000       25280      376/code --type=uti 
+tcp        0      0 100.115.92.195:55000    40.71.11.167:443        ESTABLISHED 1000       75504      376/code --type=uti 
+tcp        0      0 100.115.92.195:2222     100.115.92.25:36440     ESTABLISHED 0          5074       245/sshd: connorsto 
+tcp6       0      0 :::2222                 :::*                    LISTEN      0          3666       97/sshd             
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           0          3442       69/dhclient         
+connorstom@penguin:~/aprojects/network-traffic$ netstat -tulpn
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 127.0.0.1:40609         0.0.0.0:*               LISTEN      514/code            
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::2222                 :::*                    LISTEN      -                   
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           -                   
+connorstom@penguin:~/aprojects/network-traffic$ sudo lsof -nP -i | grep 2222
+sshd      97       root    3u  IPv4   3664      0t0  TCP *:2222 (LISTEN)
+sshd      97       root    4u  IPv6   3666      0t0  TCP *:2222 (LISTEN)
+sshd     245       root    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
+sshd     255 connorstom    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
+```
 
+### Using wireshark, can filter on port and ip_address, can see vscode in the contents 
+```bash
 
 ```
 
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/vscode-wireshark.png?raw=true" align="center" alt="vscode in the contents" />
