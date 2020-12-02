@@ -362,7 +362,57 @@ support         1529/tcp                        # GNATS
 sane-port       6566/tcp        sane saned      # SANE network scanner daemon
 ```
 
-### 
+### sudo apt-get install fd-find
 ```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install fd-find
+
+connorstom@penguin:~/aprojects/network-traffic$ fdfind 2222 /
+/home/connorstom/aprojects/network-traffic/Port-2222-uses.png
+
+```
+
+### sudo apt-get install tcpdump
+https://linuxize.com/post/tcpdump-command-in-linux/
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install tcpdump
+
+Options
+-i any : Listen on all interfaces just to see if you’re seeing any traffic.
+-i eth0 : Listen on the eth0 interface.
+-D : Show the list of available interfaces
+-n : Don’t resolve hostnames.
+-nn : Don’t resolve hostnames or port names.
+-q : Be less verbose (more quiet) with your output.
+-t : Give human-readable timestamp output.
+-tttt : Give maximally human-readable timestamp output.
+-X : Show the packet’s contents in both hex and ASCII.
+-XX : Same as -X, but also shows the ethernet header.
+-v, -vv, -vvv : Increase the amount of packet information you get back.
+-c : Only get x number of packets and then stop.
+-s : Define the size of the capture in bytes. Use -s0 to get everything, unless you are intentionally capturing less.
+-S : Print absolute sequence numbers.
+-e : Get the ethernet header as well.
+-q : Show less protocol information.
+-E : Decrypt IPSEC traffic by providing an encryption key.
+
+There are three main types of expression: type, dir, and proto.
+
+Type options are: host, net, and port.
+Direction lets you do src, dst, and combinations thereof.
+Proto(col) lets you designate: tcp, udp, icmp, ah, and many more.
+
+connorstom@penguin:~/aprojects/go-vue-sourcefiles$ tcpdump -D
+1.eth0 [Up, Running]
+2.any (Pseudo-device that captures on all interfaces) [Up, Running]
+3.lo [Up, Running, Loopback]
+4.nflog (Linux netfilter log (NFLOG) interface)
+5.nfqueue (Linux netfilter queue (NFQUEUE) interface)
+6.usbmon1 (USB bus number 1)
+7.usbmon2 (USB bus number 2)
 
 
+connorstom@penguin:~/aprojects/go-vue-sourcefiles$ sudo tcpdump -n -A port 2222
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+
+```
