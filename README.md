@@ -410,9 +410,50 @@ connorstom@penguin:~/aprojects/go-vue-sourcefiles$ tcpdump -D
 6.usbmon1 (USB bus number 1)
 7.usbmon2 (USB bus number 2)
 
+connorstom@penguin:~/aprojects/goColorsTests$ sudo tcpdump -nAtvvv       port 2222
+connorstom@penguin:~/aprojects/goColorsTests$ sudo tcpdump -nAtvvv   src port 2222
+connorstom@penguin:~/aprojects/goColorsTests$ sudo tcpdump -nAtvvvX  src port 2222
+connorstom@penguin:~/aprojects/goColorsTests$ sudo tcpdump -nAtvvvXX src port 2222
 
 connorstom@penguin:~/aprojects/go-vue-sourcefiles$ sudo tcpdump -n -A port 2222
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+```
 
+### sudo apt-get install nmap
+https://nmap.org/book/install.html#inst-already
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ nmap --version
+Nmap version 7.70 ( https://nmap.org )
+Platform: x86_64-pc-linux-gnu
+Compiled with: liblua-5.3.3 openssl-1.1.1d libssh2-1.8.0 libz-1.2.11 libpcre-8.39 libpcap-1.8.1 nmap-libdnet-1.12 ipv6
+Compiled without:
+Available nsock engines: epoll poll select
+
+connorstom@penguin:~/aprojects/network-traffic$ nmap -A -T4 scanme.nmap.org
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-02 02:15 EST
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.093s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 992 closed ports
+PORT      STATE    SERVICE      VERSION
+22/tcp    open     ssh          OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   1024 ac:00:a0:1a:82:ff:cc:55:99:dc:67:2b:34:97:6b:75 (DSA)
+|   2048 20:3d:2d:44:62:2a:b0:5a:9d:b5:b3:05:14:c2:a6:b2 (RSA)
+|   256 96:02:bb:5e:57:54:1c:4e:45:2f:56:4c:4a:24:b2:57 (ECDSA)
+|_  256 33:fa:91:0f:e0:e1:7b:1f:6d:05:a2:b0:f1:54:41:56 (ED25519)
+25/tcp    filtered smtp
+80/tcp    open     http         Apache httpd 2.4.7 ((Ubuntu))
+|_http-server-header: Apache/2.4.7 (Ubuntu)
+|_http-title: Go ahead and ScanMe!
+135/tcp   filtered msrpc
+139/tcp   filtered netbios-ssn
+445/tcp   filtered microsoft-ds
+9929/tcp  open     nping-echo   Nping echo
+31337/tcp open     tcpwrapped
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 19.41 seconds
 ```
