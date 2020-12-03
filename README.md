@@ -6,6 +6,9 @@
 
 # Good Articles
 
+### Down The Rabbit Hole: How Hackers Exploit Weak SSH Credentials To Build DDoS Botnets by Christophe Tafani-Dereeper @christophetd 57 excellent slides
+https://www.blackalps.ch/ba-17/files/talks/BlackAlps17-Tafani.pdf
+
 ### How to check open ports in Linux using the CLI
 https://www.cyberciti.biz/faq/how-to-check-open-ports-in-linux-using-the-cli/
 
