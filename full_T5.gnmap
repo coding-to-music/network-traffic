@@ -1,5 +1,0 @@
-# Nmap 7.70 scan initiated Thu Dec  3 03:28:04 2020 as: nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
-# Ports scanned: TCP(65535;1-65535) UDP(0;) SCTP(0;) PROTOCOLS(0;)
-Host: 100.115.92.195 (penguin.lxd)	Status: Up
-Host: 100.115.92.195 (penguin.lxd)	Ports: 2222/open/tcp//EtherNetIP-1///	Ignored State: closed (65534)
-# Nmap done at Thu Dec  3 03:28:10 2020 -- 1 IP address (1 host up) scanned in 5.22 seconds
