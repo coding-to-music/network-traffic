@@ -1,0 +1,5 @@
+# Nmap 7.70 scan initiated Thu Dec  3 03:29:27 2020 as: nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+# Ports scanned: TCP(63315;80,2222-65535) UDP(0;) SCTP(0;) PROTOCOLS(0;)
+Host: 100.115.92.195 (penguin.lxd)	Status: Up
+Host: 100.115.92.195 (penguin.lxd)	Ports: 2222/open/tcp//ssh//OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)/	Ignored State: closed (63314)
+# Nmap done at Thu Dec  3 03:29:34 2020 -- 1 IP address (1 host up) scanned in 6.95 seconds

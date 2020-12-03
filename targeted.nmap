@@ -1,0 +1,16 @@
+# Nmap 7.70 scan initiated Thu Dec  3 03:29:27 2020 as: nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00053s latency).
+Scanned at 2020-12-03 03:29:28 EST for 5s
+Not shown: 63314 closed ports
+Reason: 63314 conn-refused
+PORT     STATE SERVICE REASON  VERSION
+2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Dec  3 03:29:34 2020 -- 1 IP address (1 host up) scanned in 6.95 seconds

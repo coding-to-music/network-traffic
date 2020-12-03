@@ -1,0 +1,11 @@
+# Nmap 7.70 scan initiated Thu Dec  3 03:28:04 2020 as: nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00033s latency).
+Scanned at 2020-12-03 03:28:04 EST for 5s
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
+PORT     STATE SERVICE      REASON
+2222/tcp open  EtherNetIP-1 syn-ack
+
+Read data files from: /usr/bin/../share/nmap
+# Nmap done at Thu Dec  3 03:28:10 2020 -- 1 IP address (1 host up) scanned in 5.22 seconds

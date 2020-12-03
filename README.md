@@ -59,6 +59,24 @@ https://help.eset.com/era_install/65/en-US/proxy_installation_linux.html
 --cert-password=root \
 ```
 
+### Simple way to start analysis
+```bash
+sudo netstat -atupen | grep 2222
+
+sudo netstat -atupen
+
+netstat -tulpn
+
+sudo lsof -nP -i | grep 2222
+
+nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+
+nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+
+
+```
+
+
 ### How to install lsof
 ```bash
 sudo apt-get update
@@ -518,7 +536,6 @@ tcp contains vscode
 ip.addr == 100.115.92.25
 ```
 
-
 ### can see vscode in the contents but turns out it is not port 2222 
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/vscode-wireshark.png?raw=true" align="center" alt="vscode in the contents" />
@@ -526,3 +543,134 @@ ip.addr == 100.115.92.25
 ### This is traffic leaving 2222 and going to the mystery ip address 
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/wireshark-port-2222.png?raw=true" align="center" alt="vscode in the contents" />
+
+## Nightmare write-up by 0xEA31 about port 2222 exploits
+https://forum.hackthebox.eu/discussion/891/nightmare-write-up-by-0xea31
+
+## nmap fast check out my own ip_addr
+### nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:28 EST
+Initiating Ping Scan at 03:28
+Scanning 100.115.92.195 [2 ports]
+Completed Ping Scan at 03:28, 0.00s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 03:28
+Completed Parallel DNS resolution of 1 host. at 03:28, 0.00s elapsed
+DNS resolution of 1 IPs took 0.00s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
+Initiating Connect Scan at 03:28
+Scanning penguin.lxd (100.115.92.195) [65535 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 03:28, 5.06s elapsed (65535 total ports)
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00033s latency).
+Scanned at 2020-12-03 03:28:04 EST for 5s
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
+PORT     STATE SERVICE      REASON
+2222/tcp open  EtherNetIP-1 syn-ack
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 5.22 seconds
+```
+
+## nmap targeted (my own ip_id)
+### nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+```bash 
+connorstom@penguin:~/aprojects/network-traffic$ nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:29 EST
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+Initiating Ping Scan at 03:29
+Scanning 100.115.92.195 [2 ports]
+Completed Ping Scan at 03:29, 0.00s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 03:29
+Completed Parallel DNS resolution of 1 host. at 03:29, 0.01s elapsed
+DNS resolution of 1 IPs took 0.01s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
+Initiating Connect Scan at 03:29
+Scanning penguin.lxd (100.115.92.195) [63315 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 03:29, 5.02s elapsed (63315 total ports)
+Initiating Service scan at 03:29
+Scanning 1 service on penguin.lxd (100.115.92.195)
+Completed Service scan at 03:29, 0.02s elapsed (1 service on 1 host)
+NSE: Script scanning 100.115.92.195.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.41s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.01s elapsed
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00053s latency).
+Scanned at 2020-12-03 03:29:28 EST for 5s
+Not shown: 63314 closed ports
+Reason: 63314 conn-refused
+PORT     STATE SERVICE REASON  VERSION
+2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.95 seconds
+```
+
+### The usual key indicators of port 2222
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -atupen | grep 2222
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      0          3664       97/sshd             
+tcp        0      0 100.115.92.195:2222     100.115.92.25:41452     ESTABLISHED 0          172739     3370/sshd: connorst 
+tcp6       0      0 :::2222                 :::*                    LISTEN      0          3666       97/sshd             
+connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -atupen
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name    
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      0          3664       97/sshd             
+tcp        0      0 100.115.92.195:2222     100.115.92.25:41452     ESTABLISHED 0          172739     3370/sshd: connorst 
+tcp        0      0 100.115.92.195:55576    40.71.11.167:443        ESTABLISHED 1000       208438     3867/code --type=ut 
+tcp6       0      0 :::2222                 :::*                    LISTEN      0          3666       97/sshd             
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           0          3442       69/dhclient         
+connorstom@penguin:~/aprojects/network-traffic$ netstat -tulpn
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::2222                 :::*                    LISTEN      -                   
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           -                   
+connorstom@penguin:~/aprojects/network-traffic$ sudo lsof -nP -i | grep 2222
+sshd       97       root    3u  IPv4   3664      0t0  TCP *:2222 (LISTEN)
+sshd       97       root    4u  IPv6   3666      0t0  TCP *:2222 (LISTEN)
+sshd     3370       root    3u  IPv4 172739      0t0  TCP 100.115.92.195:2222->100.115.92.25:41452 (ESTABLISHED)
+sshd     3376 connorstom    3u  IPv4 172739      0t0  TCP 100.115.92.195:2222->100.115.92.25:41452 (ESTABLISHED)
+```
+
+### 
+```bash
+
+```
+
+### 
+```bash
+
+```
+
+### 
+```bash
+
+```
