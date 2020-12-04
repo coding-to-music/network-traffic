@@ -4,10 +4,80 @@
 # What is using my port 2222 ????
 ## On both my chromebooks
 
+- [network-traffic](#network-traffic)
+- [What is using my port 2222 ????](#what-is-using-my-port-2222-)
+  - [On both my chromebooks](#on-both-my-chromebooks)
+- [Good Articles](#good-articles)
+    - [Down The Rabbit Hole: How Hackers Exploit Weak SSH Credentials To Build DDoS Botnets by Christophe Tafani-Dereeper @christophetd 57 excellent slides](#down-the-rabbit-hole-how-hackers-exploit-weak-ssh-credentials-to-build-ddos-botnets-by-christophe-tafani-dereeper-christophetd-57-excellent-slides)
+    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22)
+    - [How to check open ports in Linux using the CLI](#how-to-check-open-ports-in-linux-using-the-cli)
+    - [Linux Find Out Which Process Is Listening Upon a Port](#linux-find-out-which-process-is-listening-upon-a-port)
+    - [Wikipedia List_of_TCP_and_UDP_port_numbers Ports 2222-2226 ESET Remote administrator](#wikipedia-list_of_tcp_and_udp_port_numbers-ports-2222-2226-eset-remote-administrator)
+    - [Netcat - How to listen on a TCP port using IPv6 address? example port 2222](#netcat---how-to-listen-on-a-tcp-port-using-ipv6-address-example-port-2222)
+    - [Recommends using ncat](#recommends-using-ncat)
+    - [But really prefers using socat](#but-really-prefers-using-socat)
+    - [ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.](#eset-bratislava-slovak-republic-handles-communication-with-agents-collecting-and-storing-application-data)
+    - [SpeedGuide.net Port 2222 Details](#speedguidenet-port-2222-details)
+- [Trying various commands](#trying-various-commands)
+  - [ESET Linux proxy install instructions example, is this similar to what is running?](#eset-linux-proxy-install-instructions-example-is-this-similar-to-what-is-running)
+    - [Example of an installation script from ESET](#example-of-an-installation-script-from-eset)
+    - [Simple way to start analysis](#simple-way-to-start-analysis)
+    - [How to install lsof](#how-to-install-lsof)
+  - [lsof Command Example](#lsof-command-example)
+    - [Type the command as follows:](#type-the-command-as-follows)
+    - [sudo lsof -T | grep 2222](#sudo-lsof--t--grep-2222)
+    - [netstat -tulpn](#netstat--tulpn)
+    - [sudo netstat -atupen](#sudo-netstat--atupen)
+    - [sudo netstat -atupen | grep EST](#sudo-netstat--atupen--grep-est)
+    - [sudo netstat -atupen | grep 2222](#sudo-netstat--atupen--grep-2222)
+    - [sudo apt-get install whois](#sudo-apt-get-install-whois)
+    - [whois 100.115.92.25](#whois-1001159225)
+    - [sudo ss -tunp](#sudo-ss--tunp)
+    - [sudo lsof -nP -i](#sudo-lsof--np--i)
+    - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222)
+    - [sudo apt-get install ncat](#sudo-apt-get-install-ncat)
+    - [sudo apt-get install socat](#sudo-apt-get-install-socat)
+    - [sudo grep -Rl "2222" /](#sudo-grep--rl-2222-)
+    - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222-1)
+    - [sudo lsof -nP -i](#sudo-lsof--np--i-1)
+  - [Find Out Current Working Directory Of a Process](#find-out-current-working-directory-of-a-process)
+    - [sudo ls -l /proc/96/exe](#sudo-ls--l-proc96exe)
+    - [whatis sshd](#whatis-sshd)
+    - [sudo pwdx 258](#sudo-pwdx-258)
+  - [Find Out Owner Of a Process on Linux](#find-out-owner-of-a-process-on-linux)
+    - [ps aux | grep 96](#ps-aux--grep-96)
+    - [ps aux | grep 258](#ps-aux--grep-258)
+    - [ps -eo pid,user,group,args,etime,lstart | grep '96'](#ps--eo-pidusergroupargsetimelstart--grep-96)
+    - [ps aux | grep notty](#ps-aux--grep-notty)
+    - [cat /proc/96/environ](#cat-proc96environ)
+  - [Help: I Discover an Open Port Which I Don’t Recognize At All](#help-i-discover-an-open-port-which-i-dont-recognize-at-all)
+    - [grep port /etc/services](#grep-port-etcservices)
+    - [sudo apt-get install fd-find](#sudo-apt-get-install-fd-find)
+    - [sudo apt-get install tcpdump](#sudo-apt-get-install-tcpdump)
+    - [sudo apt-get install nmap](#sudo-apt-get-install-nmap)
+    - [sudo apt-get install wireshark](#sudo-apt-get-install-wireshark)
+    - [After reboot, Check what ip address is using port 2222](#after-reboot-check-what-ip-address-is-using-port-2222)
+    - [Using wireshark, can filter on port and ip_address, can see vscode in the contents](#using-wireshark-can-filter-on-port-and-ip_address-can-see-vscode-in-the-contents)
+    - [can see vscode in the contents but turns out it is not port 2222](#can-see-vscode-in-the-contents-but-turns-out-it-is-not-port-2222)
+    - [This is traffic leaving 2222 and going to the mystery ip address](#this-is-traffic-leaving-2222-and-going-to-the-mystery-ip-address)
+  - [Nightmare write-up by 0xEA31 about port 2222 exploits](#nightmare-write-up-by-0xea31-about-port-2222-exploits)
+  - [nmap fast check out my own ip_addr](#nmap-fast-check-out-my-own-ip_addr)
+    - [nmap -T5 -p- -vvv -oA full_T5 100.115.92.195](#nmap--t5--p---vvv--oa-full_t5-10011592195)
+  - [nmap targeted (my own ip_id)](#nmap-targeted-my-own-ip_id)
+    - [nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195](#nmap--a--p802222---vvv--oa-targeted-10011592195)
+    - [The usual key indicators of port 2222](#the-usual-key-indicators-of-port-2222)
+    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-1)
+    - [](#)
+    - [](#-1)
+    - [](#-2)
+
 # Good Articles
 
 ### Down The Rabbit Hole: How Hackers Exploit Weak SSH Credentials To Build DDoS Botnets by Christophe Tafani-Dereeper @christophetd 57 excellent slides
 https://www.blackalps.ch/ba-17/files/talks/BlackAlps17-Tafani.pdf
+
+### SSH Penetration Testing (Port 22)
+https://www.hackingarticles.in/ssh-penetration-testing-port-22/
 
 ### How to check open ports in Linux using the CLI
 https://www.cyberciti.biz/faq/how-to-check-open-ports-in-linux-using-the-cli/
@@ -37,6 +107,7 @@ https://www.speedguide.net/port.php?port=2222
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
  
+# Trying various commands
 ## ESET Linux proxy install instructions example, is this similar to what is running?
 ### Example of an installation script from ESET
 https://help.eset.com/era_install/65/en-US/proxy_installation_linux.html
@@ -659,6 +730,9 @@ sshd       97       root    4u  IPv6   3666      0t0  TCP *:2222 (LISTEN)
 sshd     3370       root    3u  IPv4 172739      0t0  TCP 100.115.92.195:2222->100.115.92.25:41452 (ESTABLISHED)
 sshd     3376 connorstom    3u  IPv4 172739      0t0  TCP 100.115.92.195:2222->100.115.92.25:41452 (ESTABLISHED)
 ```
+
+### SSH Penetration Testing (Port 22)
+https://www.hackingarticles.in/ssh-penetration-testing-port-22/
 
 ### 
 ```bash
