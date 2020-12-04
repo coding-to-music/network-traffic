@@ -67,6 +67,21 @@
     - [nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195](#nmap--a--p802222---vvv--oa-targeted-10011592195)
     - [The usual key indicators of port 2222](#the-usual-key-indicators-of-port-2222)
     - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-1)
+    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-2)
+    - [nmap -sV -p2222 100.115.92.195](#nmap--sv--p2222-10011592195)
+    - [nmap -sV -p22 100.115.92.195](#nmap--sv--p22-10011592195)
+    - [To view available devices    sudo tcpdump -D](#to-view-available-devices----sudo-tcpdump--d)
+    - [sudo tcpdump -vvv -i eth0 port 2222](#sudo-tcpdump--vvv--i-eth0-port-2222)
+    - [sudo netstat -tunlp](#sudo-netstat--tunlp)
+    - [sudo tcpdump -v -i eth0 dst 100.115.92.25](#sudo-tcpdump--v--i-eth0-dst-1001159225)
+    - [sudo tcpdump -nAtvvvXX src port 2222](#sudo-tcpdump--natvvvxx-src-port-2222)
+    - [ps -aux](#ps--aux)
+    - [top -p 1859](#top--p-1859)
+    - [View the logs in /var/log](#view-the-logs-in-varlog)
+    - [dmesg | grep port](#dmesg--grep-port)
+- [check this after reboot to see if the logs are more verbose](#check-this-after-reboot-to-see-if-the-logs-are-more-verbose)
+    - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222)
+    - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
     - [](#)
     - [](#-1)
     - [](#-2)
@@ -743,17 +758,202 @@ Some Markdown text with <span style="color:yellow">some *yellow* text</span>
 Some Markdown text with <span style="color:magenta">some *magenta* text</span>
 
 
-### 
+### SSH Penetration Testing (Port 22) 
+https://www.hackingarticles.in/ssh-penetration-testing-port-22/
 ```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo apt install openssh-server
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+openssh-server is already the newest version (1:7.9p1-10+deb10u2).
+openssh-server set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 32 not upgraded.
+```
+
+### nmap -sV -p2222 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -sV -p2222 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up (0.00043s latency).
+
+PORT     STATE SERVICE VERSION
+2222/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1.62 seconds
+```
+
+### nmap -sV -p22 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -sV -p22 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up (0.00027s latency).
+
+PORT   STATE  SERVICE VERSION
+22/tcp closed ssh
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.88 seconds
+```
+
+### To view available devices    sudo tcpdump -D
+```bash
+connorstom@penguin:/var/log$ sudo tcpdump -D
+1.eth0 [Up, Running]
+2.any (Pseudo-device that captures on all interfaces) [Up, Running]
+3.lo [Up, Running, Loopback]
+4.nflog (Linux netfilter log (NFLOG) interface)
+5.nfqueue (Linux netfilter queue (NFQUEUE) interface)
+6.usbmon1 (USB bus number 1)
+7.usbmon2 (USB bus number 2)
+```
+
+### sudo tcpdump -vvv -i eth0 port 2222
+```bash
+
+```
+
+### sudo netstat -tunlp
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -tunlp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      97/sshd             
+tcp6       0      0 :::2222                 :::*                    LISTEN      97/sshd             
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           69/dhclient    
+```
+
+### sudo tcpdump -v -i eth0 dst 100.115.92.25
+```bash
+connorstom@penguin:/var/log$ sudo tcpdump -vvv -i eth0 port 2222
+tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+02:20:59.222300 IP (tos 0x8, ttl 64, id 22599, offset 0, flags [DF], proto TCP (6), length 52)
+    penguin.lxd.2222 > 100.115.92.25.34128: Flags [.], cksum 0x81e9 (incorrect -> 0x2121), seq 1742051507, ack 313750789, win 501, options [nop,nop,TS val 1236229481 ecr 239470150], length 0
+02:20:59.222659 IP (tos 0x20, ttl 63, id 48872, offset 0, flags [DF], proto TCP (6), length 52)
+    100.115.92.25.34128 > penguin.lxd.2222: Flags [.], cksum 0x81e9 (incorrect -> 0x7127), seq 1, ack 1, win 1454, options [nop,nop,TS val 246807916 ecr 1236144660], length 0
+^C
+2 packets captured
+2 packets received by filter
+0 packets dropped by kernel
+```
+
+### sudo tcpdump -nAtvvvXX src port 2222
+```bash
+connorstom@penguin:~/aprojects/goColorsTests$ sudo tcpdump -nAtvvvXX src port 2222
+```
+
+### ps -aux
+```bash
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      1859  0.0  0.1  16992  2932 ?        Ss   Dec03   0:00 sshd: connorstom [priv]
+connors+  1865  0.0  0.0  16992  2180 ?        S    Dec03   0:00 sshd: connorstom@notty
+connors+  1866  0.0  0.0  16992  2192 ?        Ss   Dec03   0:00 sshd: connorstom@internal-sftp
+```
+
+### top -p 1859
+```bash
+top - 02:13:17 up  9:42,  0 users,  load average: 0.82, 0.83, 0.60
+Tasks:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 12.1 us,  4.0 sy,  0.0 ni, 60.1 id,  0.0 wa,  0.0 hi,  0.0 si, 23.8 st
+MiB Mem :   2779.8 total,   2772.4 free,      5.6 used,      1.8 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   2774.2 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                                                                                           
+ 1859 root      20   0   16992   2332   1212 S   0.0   0.1   0:00.10 sshd                                                                                                                                                                  ```
+
+
+### systemctl list-sockets
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ systemctl list-sockets
+LISTEN                          UNIT                            ACTIVATES
+/run/initctl                    systemd-initctl.socket          systemd-initctl.service
+/run/systemd/journal/dev-log    systemd-journald-dev-log.socket systemd-journald.service
+/run/systemd/journal/socket     systemd-journald.socket         systemd-journald.service
+/run/systemd/journal/stdout     systemd-journald.socket         systemd-journald.service
+/run/udev/control               systemd-udevd-control.socket    systemd-udevd.service
+/var/run/dbus/system_bus_socket dbus.socket                     dbus.service
+kobject-uevent 1                systemd-udevd-kernel.socket     systemd-udevd.service
+
+7 sockets listed.
+Pass --all to see loaded but inactive sockets, too.
+```
+
+### View the logs in /var/log
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ cd /var/log
+connorstom@penguin:/var/log$ ll
+total 400
+-rw-rw-r--  1 root utmp             21888 Dec  3 16:30 wtmp
+-rw-r--r--  1 root root            319068 Dec  2 03:30 dpkg.log
+drwxr-xr-x  1 root root                60 Dec  2 03:20 apt/
+-rw-r--r--  1 root root             16398 Dec  2 02:11 alternatives.log
+drwxr-sr-x+ 1 root systemd-journal     64 Nov 25 00:28 journal/
+drwxr-xr-x  1 root root               180 Nov 25 00:28 ./
+drwx------  1 root root                 0 Nov 25 00:28 private/
+-rw-r--r--  1 root root              3456 Jul 22 00:26 faillog
+-rw-rw-r--  1 root utmp             31536 Jul 22 00:26 lastlog
+-rw-r--r--  1 root root              1943 Jul 22 00:26 fontconfig.log
+-rw-r--r--  1 root root             34664 Jul 21 01:26 bootstrap.log
+drwxr-xr-x  1 root root                90 Jul 21 01:26 ../
+-rw-rw----  1 root utmp                 0 Jul 21 01:26 btmp
+```
+
+### dmesg | grep port
+```bash
+    2.305095] 8021q: 802.1Q VLAN Support v1.8
+[    2.305295] 9pnet: Installing 9P2000 support
+[    2.776671] maitred: Server listening on port 8888
+[    2.791686] maitred: Using startup listener port: 7777
+[   11.239029] lxdbr0: port 1(veth95d428a9) entered blocking state
+[   11.240340] lxdbr0: port 1(veth95d428a9) entered disabled state
+[   11.630945] cgroup: lxd (282) created nested cgroup for controller "memory" which has incomplete hierarchy support. Nested cgroups may change behavior in the future.
+[   11.666585] lxdbr0: port 1(veth95d428a9) entered blocking state
+[   11.666828] lxdbr0: port 1(veth95d428a9) entered forwarding state
+```
+
+# check this after reboot to see if the logs are more verbose
+### sudo journalctl | grep 2222
+```bash
+sudo journalctl | grep 2222
+
+Nov 30 01:01:35 penguin sshd[95]: Server listening on 0.0.0.0 port 2222.
+Nov 30 01:01:35 penguin sshd[95]: Server listening on :: port 2222.
+Nov 30 12:58:43 penguin sshd[97]: Server listening on 0.0.0.0 port 2222.
+Nov 30 12:58:43 penguin sshd[97]: Server listening on :: port 2222.
+Dec 01 04:15:27 penguin sshd[95]: Server listening on 0.0.0.0 port 2222.
+Dec 01 04:15:27 penguin sshd[95]: Server listening on :: port 2222.
+Dec 01 13:44:59 penguin sshd[96]: Server listening on 0.0.0.0 port 2222.
+Dec 01 13:44:59 penguin sshd[96]: Server listening on :: port 2222.
+Dec 02 14:08:00 penguin sshd[97]: Server listening on 0.0.0.0 port 2222.
+Dec 02 14:08:00 penguin sshd[97]: Server listening on :: port 2222.
+Dec 03 16:30:46 penguin sshd[97]: Server listening on 0.0.0.0 port 2222.
+Dec 03 16:30:46 penguin sshd[97]: Server listening on :: port 2222.
+```
+
+### edit /etc/ssh/sshd_config
+```bash
+Logging
+SyslogFacility AUTH
+
+LogLevel VERBOSE
+
+https://manpages.debian.org/testing/openssh-server/sshd_config.5.en.html
+LogLevel INFO  -- this was the default original value
+Gives the verbosity level that is used when logging messages from sshd(8). The possible values are: QUIET, FATAL, ERROR, INFO, VERBOSE, DEBUG, DEBUG1, DEBUG2, and DEBUG3. The default is INFO. DEBUG and DEBUG1 are equivalent. DEBUG2 and DEBUG3 each specify higher levels of debugging output. Logging with a DEBUG level violates the privacy of users and is not recommended.
 
 ```
 
 ### 
 ```bash
-
 ```
 
 ### 
 ```bash
+```
 
+### 
+```bash
 ```
