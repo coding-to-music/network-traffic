@@ -95,11 +95,19 @@
 - [Call it without arguments to display the full help](#call-it-without-arguments-to-display-the-full-help)
 - [Basic usage](#basic-usage)
 - [To save the report in a specific format, mount /tmp as a volume:](#to-save-the-report-in-a-specific-format-mount-tmp-as-a-volume)
+    - [ps -feww](#ps--feww)
+    - [systemctl status 2185](#systemctl-status-2185)
+    - [pstree](#pstree)
+    - [pstree -a](#pstree--a)
+    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
+    - [systemctl status 2185](#systemctl-status-2185-1)
+    - [ls -al /proc/](#ls--al-proc)
+    - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
+    - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
     - [](#)
     - [](#-1)
     - [](#-2)
     - [](#-3)
-    - [](#-4)
 
 # Good Articles
 
@@ -1039,6 +1047,8 @@ cd nikto/program
 ./nikto.pl -h http://www.example.com
 # Run using perl (if you forget to chmod)
 perl nikto.pl -h http://www.example.com
+
+./nikto.pl -h $IPADDRESS
 ~~~
 
 ### Nikto Run as a Docker container:
@@ -1055,11 +1065,215 @@ docker run --rm sullo/nikto -h http://www.example.com
 docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
 ~~~
 
-### 
+### ps -feww
 ```bash
+# -ww    unlimited width
+# -ef    is the usual ps -ef
+# -e     Select all processes
+# -f     Do full-format listing
+# -H     Show process hierarchy (forest)
+ps -feww
 
-./nikto.pl -h $IPADDRESS
+connorstom@penguin:~$ ps -Hf -p 2185,96,2211
+UID        PID  PPID  C STIME TTY          TIME CMD
+root        96     1  0 Dec04 ?        00:00:00 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+root      2185    96  0 Dec04 ?        00:00:00   sshd: connorstom [priv]
+connors+  2211  2185  0 Dec04 ?        00:00:00     sshd: connorstom@notty
 
+```
+
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 1h 56min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+### pstree
+```bash
+connorstom@penguin:/proc/2185$ pstree
+systemd─┬─agetty
+        ├─dbus-daemon
+        ├─dhclient
+        ├─polkitd───2*[{polkitd}]
+        ├─sshd───sshd───sshd───sshd
+        ├─systemd─┬─(sd-pam)
+        │         ├─at-spi-bus-laun─┬─dbus-daemon
+        │         │                 └─3*[{at-spi-bus-laun}]
+        │         ├─at-spi2-registr───2*[{at-spi2-registr}]
+        │         ├─dbus-daemon
+        │         ├─gnome-keyring-d───3*[{gnome-keyring-d}]
+        │         ├─2*[ld-linux-x86-64───ld-linux-x86-64───4*[{ld-linux-x86-64}]]
+        │         ├─2*[ld-linux-x86-64]
+        │         └─ld-linux-x86-64─┬─code─┬─code───code───5*[{code}]
+        │                           │      ├─code
+        │                           │      ├─code───6*[{code}]
+        │                           │      ├─code─┬─bash
+        │                           │      │      ├─code─┬─code───7*[{code}]
+        │                           │      │      │      └─16*[{code}]
+        │                           │      │      ├─code───11*[{code}]
+        │                           │      │      └─20*[{code}]
+        │                           │      ├─code─┬─bash───pstree
+        │                           │      │      ├─code───16*[{code}]
+        │                           │      │      └─20*[{code}]
+        │                           │      ├─code─┬─bash
+        │                           │      │      ├─code───16*[{code}]
+        │                           │      │      └─19*[{code}]
+        │                           │      ├─code───18*[{code}]
+        │                           │      └─30*[{code}]
+        │                           ├─ld-linux-x86-64───bash
+        │                           └─10*[{ld-linux-x86-64}]
+        ├─systemd-journal
+        ├─systemd-logind
+        └─systemd-udevd
+```
+
+### pstree -a
+```bash
+# -a Show command line arguments
+connorstom@penguin:/proc/2185$ pstree -a
+systemd
+  ├─agetty -o -p -- \\u --noclear --keep-baud console 115200,38400,9600 vt220
+  ├─dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+  ├─dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df/var/lib/dhcp/dhclient6.eth0.lea
+  ├─polkitd --no-debug
+  │   └─2*[{polkitd}]
+  ├─sshd -D -f /dev/.ssh/sshd_config
+  │   └─sshd                      
+  │       └─sshd                       
+  │           └─sshd               
+  ├─systemd --user
+  │   ├─(sd-pam)  
+  │   ├─at-spi-bus-laun
+  │   │   ├─dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+  │   │   └─3*[{at-spi-bus-laun}]
+  │   ├─at-spi2-registr --use-gnome-session
+  │   │   └─2*[{at-spi2-registr}]
+  │   ├─dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+  │   ├─gnome-keyring-d --start --foreground --components=secrets
+  │   │   └─3*[{gnome-keyring-d}]
+  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  │   │   └─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  │   │       └─4*[{ld-linux-x86-64}]
+  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  ├─systemd-journal
+  ├─systemd-logind
+  └─systemd-udevd
+```
+
+### systemctl status $(pgrep perl)
+```bash
+connorstom@penguin:/proc/2185$ systemctl status $(pgrep perl)
+● penguin
+    State: running
+     Jobs: 0 queued
+   Failed: 0 units
+    Since: Fri 2020-12-04 15:20:14 EST; 10h ago
+   CGroup: /
+           ├─user.slice
+           │ └─user-1000.slice
+           │   ├─user@1000.service
+           │   │ ├─sommelier\x2dx.slice
+           │   │ │ ├─sommelier-x@1.service
+           │   │ │ │ ├─143 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ │ └─176 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier-x@0.service
+           │   │ │   ├─146 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │   └─177 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─sommelier.slice
+           │   │ │ ├─sommelier@0.service
+           │   │ │ │ └─160 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier@1.service
+           │   │ │   └─148 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─init.scope
+           │   │ │ ├─ 98 /lib/systemd/systemd --user
+           │   │ │ └─101 (sd-pam)
+           │   │ ├─at-spi-dbus-bus.service
+           │   │ │ ├─398 /usr/lib/at-spi2-core/at-spi-bus-launcher
+           │   │ │ ├─403 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-addre
+           │   │ │ └─405 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
+           │   │ └─dbus.service
+           │   │   ├─397 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-onl
+           │   │   └─574 /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets
+           │   └─session-3.scope
+           │     ├─2185 sshd: connorstom [priv]
+           │     ├─2211 sshd: connorstom@notty
+           │     └─2215 sshd: connorstom@internal-sftp
+           ├─init.scope
+           │ └─1 /sbin/init
+           └─system.slice
+             ├─systemd-udevd.service
+             │ └─45 /lib/systemd/systemd-udevd
+             ├─networking.service
+             │ └─71 /sbin/dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df /var/lib/dhc
+             ├─polkit.service
+             │ └─259 /usr/lib/policykit-1/polkitd --no-debug
+             ├─systemd-journald.service
+             │ └─36 /lib/systemd/systemd-journald
+             ├─console-getty.service
+             │ └─95 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
+             ├─cros-sftp.service
+             │ └─96 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+             ├─dbus.service
+             │ └─63 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+             └─systemd-logind.service
+               └─64 /lib/systemd/systemd-logind
+```
+
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 2h 11min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+### ls -al /proc/
+```bash
+# ls -al /proc/
+ls -al /proc/
+
+Most reliable way is to look at the /proc dir for the process. Each process has a /proc/<pid>/ directory where it keeps information like:
+
+`cwd` link to the current working directory
+`fd` a dir with links to the open files (file descriptors)
+`cmdline` read it to see what command line was used to start the process
+`environ` the environment variables for that process
+`root` a link to what the process considers its root dir (it will be / unless chrooted)
+```
+
+### sudo ss -lptn 'sport = :2222'
+```bash
+connorstom@penguin:/proc/2185$ sudo ss -lptn 'sport = :2222'
+State       Recv-Q      Send-Q           Local Address:Port            Peer Address:Port                                         
+LISTEN      0           128                    0.0.0.0:2222                 0.0.0.0:*          users:(("sshd",pid=96,fd=3))      
+LISTEN      0           128                       [::]:2222                    [::]:*          users:(("sshd",pid=96,fd=4))  
+```
+
+### socket statistics command (i.e. ss) 
+```bash
+# Here is an example of execution:
+
+connorstom@penguin:/proc/2185$ ss -tanp | grep '222\|State'
+State    Recv-Q   Send-Q        Local Address:Port         Peer Address:Port                       
+LISTEN   0        128                 0.0.0.0:2222              0.0.0.0:*            
+ESTAB    0        0            100.115.92.195:2222        100.115.92.25:33504
+LISTEN   0        128                    [::]:2222                 [::]:*     
 ```
 
 ### 
