@@ -82,9 +82,24 @@
 - [check this after reboot to see if the logs are more verbose](#check-this-after-reboot-to-see-if-the-logs-are-more-verbose)
     - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222)
     - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
+    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
+    - [Nikto Installation](#nikto-installation)
+- [get the file](#get-the-file)
+- [unzip into a directory, run](#unzip-into-a-directory-run)
+- [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
+    - [Run nikto normally:](#run-nikto-normally)
+- [Main script is in program/](#main-script-is-in-program)
+- [Run using the shebang interpreter](#run-using-the-shebang-interpreter)
+- [Run using perl (if you forget to chmod)](#run-using-perl-if-you-forget-to-chmod)
+    - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
+- [Call it without arguments to display the full help](#call-it-without-arguments-to-display-the-full-help)
+- [Basic usage](#basic-usage)
+- [To save the report in a specific format, mount /tmp as a volume:](#to-save-the-report-in-a-specific-format-mount-tmp-as-a-volume)
     - [](#)
     - [](#-1)
     - [](#-2)
+    - [](#-3)
+    - [](#-4)
 
 # Good Articles
 
@@ -148,15 +163,10 @@ https://help.eset.com/era_install/65/en-US/proxy_installation_linux.html
 ### Simple way to start analysis
 ```bash
 sudo netstat -atupen | grep 2222
-
 sudo netstat -atupen
-
 netstat -tulpn
-
 sudo lsof -nP -i | grep 2222
-
 nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
-
 nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
 
 
@@ -943,7 +953,117 @@ LogLevel VERBOSE
 https://manpages.debian.org/testing/openssh-server/sshd_config.5.en.html
 LogLevel INFO  -- this was the default original value
 Gives the verbosity level that is used when logging messages from sshd(8). The possible values are: QUIET, FATAL, ERROR, INFO, VERBOSE, DEBUG, DEBUG1, DEBUG2, and DEBUG3. The default is INFO. DEBUG and DEBUG1 are equivalent. DEBUG2 and DEBUG3 each specify higher levels of debugging output. Logging with a DEBUG level violates the privacy of users and is not recommended.
+```
 
+### nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 16:01 EST
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+Initiating Parallel DNS resolution of 1 host. at 16:01
+Completed Parallel DNS resolution of 1 host. at 16:01, 0.02s elapsed
+Initiating Connect Scan at 16:01
+Scanning penguin.lxd (100.115.92.195) [65535 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 16:01, 6.22s elapsed (65535 total ports)
+Initiating Service scan at 16:01
+Scanning 1 service on penguin.lxd (100.115.92.195)
+Completed Service scan at 16:01, 0.02s elapsed (1 service on 1 host)
+NSE: Script scanning 100.115.92.195.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.20s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.01s elapsed
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received user-set (0.00035s latency).
+Scanned at 2020-12-04 16:01:50 EST for 6s
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
+PORT     STATE SERVICE REASON  VERSION
+2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 7.83 seconds
+```
+
+Nikto web server scanner  - https://cirt.net/Nikto2
+
+Full documentation - https://cirt.net/nikto2-docs/
+
+
+### Nikto Installation
+
+~~~
+# get the file
+test@ubuntu:~$ wget https://github.com/sullo/nikto/archive/master.zip
+
+# unzip into a directory, run
+test@ubuntu:~$ unzip master.zip
+test@ubuntu:~$ cd nikto-master/program
+test@ubuntu:~/nikto-master/program$ perl nikto.pl
+~~~
+
+# Starting a Nikto Web Scan
+~~~
+perl nikto.pl -host https://nikto-test.com
+~~~
+
+### Run nikto normally:
+
+~~~
+git clone https://github.com/sullo/nikto
+# Main script is in program/
+cd nikto/program
+# Run using the shebang interpreter
+./nikto.pl -h http://www.example.com
+# Run using perl (if you forget to chmod)
+perl nikto.pl -h http://www.example.com
+~~~
+
+### Nikto Run as a Docker container:
+
+~~~bash
+git clone https://github.com/sullo/nikto.git
+cd nikto
+docker build -t sullo/nikto .
+# Call it without arguments to display the full help
+docker run --rm sullo/nikto
+# Basic usage
+docker run --rm sullo/nikto -h http://www.example.com
+# To save the report in a specific format, mount /tmp as a volume:
+docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
+~~~
+
+### 
+```bash
+
+./nikto.pl -h $IPADDRESS
+
+```
+
+### 
+```bash
 ```
 
 ### 
