@@ -104,10 +104,10 @@
     - [ls -al /proc/](#ls--al-proc)
     - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
     - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
+    - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
+    - [socat/EXAMPLES](#socatexamples)
     - [](#)
     - [](#-1)
-    - [](#-2)
-    - [](#-3)
 
 # Good Articles
 
@@ -1276,12 +1276,71 @@ ESTAB    0        0            100.115.92.195:2222        100.115.92.25:33504
 LISTEN   0        128                    [::]:2222                 [::]:*     
 ```
 
-### 
+### sudo fuser -v -n tcp 2222
 ```bash
+connorstom@penguin:/proc/2185$ sudo fuser -v -n tcp 2222
+                     USER        PID ACCESS COMMAND
+2222/tcp:            root         96 F.... sshd
+                     root       2185 F.... sshd
+                     connorstom   2211 F.... sshd
 ```
 
-### 
+### socat/EXAMPLES
+https://github.com/craSH/socat/blob/master/EXAMPLES
 ```bash
+# socat
+
+# multipurpose relay for bidirectional data transfer
+
+# Socat (for SOcket CAT) establishes two bidirectional byte streams and transfers data between them. 
+
+# Data channels may be files, pipes, devices (terminal or modem, etc.), or sockets (Unix, IPv4, IPv6, raw, UDP, TCP, SSL).
+
+#Examples of using socat
+#Let's get started with some basic examples of using socat for various connections.
+
+1. Connect to TCP port 80 on the local or remote system:
+
+# socat - TCP4:www.example.com:80
+In this case, socat transfers data between STDIO (-) and a TCP4 connection to port 80 on a host named www.example.com.
+
+2. Use socat as a TCP port forwarder:
+
+For a single connection, enter:
+
+# socat TCP4-LISTEN:81 TCP4:192.168.1.10:80
+For multiple connections, use the fork option as used in the examples below:
+
+# socat TCP4-LISTEN:81,fork,reuseaddr TCP4:TCP4:192.168.1.10:80
+This example listens on port 81, accepts connections, and forwards the connections to port 80 on the remote host.
+
+# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock 
+The above example listens on port 3307, accepts connections, and forwards the connections to a Unix socket on the remote host.
+
+3. Implement a simple network-based message collector:
+
+# socat -u TCP4-LISTEN:3334,reuseaddr,fork OPEN:/tmp/test.log,creat,append
+In this example, when a client connects to port 3334, a new child process is generated. All data sent by the clients is appended to the file /tmp/test.log. If the file does not exist, socat creates it. The option reuseaddr allows an immediate restart of the server process.
+
+4. Send a broadcast to the local network:
+
+# socat - UDP4-DATAGRAM:224.255.0.1:6666,bind=:6666,ip-add-membership=224.255.0.1:eth0
+In this case, socat transfers data from stdin to the specified multicast address using UDP over port 6666 for both the local and remote connections. The command also tells the interface eth0 to accept multicast packets for the given group.
+
+Practical uses for socat
+Socat is a great tool for troubleshooting. It is also handy for easily making remote connections. Practically, I have used socat for remote MySQL connections. In the example below, I demonstrate how I use socat to connect my web application to a remote MySQL server by connecting over the local socket.
+
+1. On my remote MySQL server, I enter:
+
+# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock &
+This command starts socat and configures it to listen by using port 3307.
+
+2. On my webserver, I enter:
+
+# socat UNIX-LISTEN:/var/lib/mysql/mysql.sock,fork,reuseaddr,unlink-early,user=mysql,group=mysql,mode=777 TCP:192.168.100.5:3307 &
+The above command connects to the remote server 192.168.100.5 by using port 3307.
+
+However, all communication will be done on the Unix socket /var/lib/mysql/mysql.sock, and this makes it appear to be a local server.
 ```
 
 ### 
