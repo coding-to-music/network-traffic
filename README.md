@@ -83,18 +83,10 @@
     - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222)
     - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
     - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
-    - [Nikto Installation](#nikto-installation)
-- [get the file](#get-the-file)
-- [unzip into a directory, run](#unzip-into-a-directory-run)
-- [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
+- [Nikto Installation](#nikto-installation)
+    - [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
     - [Run nikto normally:](#run-nikto-normally)
-- [Main script is in program/](#main-script-is-in-program)
-- [Run using the shebang interpreter](#run-using-the-shebang-interpreter)
-- [Run using perl (if you forget to chmod)](#run-using-perl-if-you-forget-to-chmod)
     - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
-- [Call it without arguments to display the full help](#call-it-without-arguments-to-display-the-full-help)
-- [Basic usage](#basic-usage)
-- [To save the report in a specific format, mount /tmp as a volume:](#to-save-the-report-in-a-specific-format-mount-tmp-as-a-volume)
     - [ps -feww](#ps--feww)
     - [systemctl status 2185](#systemctl-status-2185)
     - [pstree](#pstree)
@@ -106,8 +98,15 @@
     - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
     - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
     - [socat/EXAMPLES](#socatexamples)
-    - [](#)
-    - [](#-1)
+    - [How to inspect systemd journal files directly?](#how-to-inspect-systemd-journal-files-directly)
+    - [When did a process first start?   ps -eo pid,lstart,cmd](#when-did-a-process-first-start---ps--eo-pidlstartcmd)
+  - [cat /proc/2177/status](#cat-proc2177status)
+- [README-create-debian-startup-script.md](#readme-create-debian-startup-scriptmd)
+  - [Debian Boot Process](#debian-boot-process)
+  - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory)
+    - [All scripts executed by the init system are located in the directory /etc/init.d/](#all-scripts-executed-by-the-init-system-are-located-in-the-directory-etcinitd)
+  - [init. d contains the start/stop scripts the daemon while the system is running or during boot](#init-d-contains-the-startstop-scripts-the-daemon-while-the-system-is-running-or-during-boot)
+    - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory-1)
 
 # Good Articles
 
@@ -1020,26 +1019,28 @@ Nikto web server scanner  - https://cirt.net/Nikto2
 Full documentation - https://cirt.net/nikto2-docs/
 
 
-### Nikto Installation
+# Nikto Installation
 
-~~~
+```bash
 # get the file
 test@ubuntu:~$ wget https://github.com/sullo/nikto/archive/master.zip
+```
 
+```bash
 # unzip into a directory, run
 test@ubuntu:~$ unzip master.zip
 test@ubuntu:~$ cd nikto-master/program
 test@ubuntu:~/nikto-master/program$ perl nikto.pl
-~~~
+```
 
-# Starting a Nikto Web Scan
-~~~
+### Starting a Nikto Web Scan
+```bash
 perl nikto.pl -host https://nikto-test.com
-~~~
+```
 
 ### Run nikto normally:
 
-~~~
+```bash
 git clone https://github.com/sullo/nikto
 # Main script is in program/
 cd nikto/program
@@ -1049,11 +1050,11 @@ cd nikto/program
 perl nikto.pl -h http://www.example.com
 
 ./nikto.pl -h $IPADDRESS
-~~~
+```
 
 ### Nikto Run as a Docker container:
 
-~~~bash
+```bash
 git clone https://github.com/sullo/nikto.git
 cd nikto
 docker build -t sullo/nikto .
@@ -1063,7 +1064,7 @@ docker run --rm sullo/nikto
 docker run --rm sullo/nikto -h http://www.example.com
 # To save the report in a specific format, mount /tmp as a volume:
 docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
-~~~
+```
 
 ### ps -feww
 ```bash
@@ -1289,110 +1290,6 @@ connorstom@penguin:/proc/2185$ sudo fuser -v -n tcp 2222
 https://github.com/craSH/socat/blob/master/EXAMPLES
 ```bash
 # socat- [network-traffic](#network-traffic)
-- [network-traffic](#network-traffic)
-- [What is using my port 2222 ????](#what-is-using-my-port-2222-)
-  - [On both my chromebooks](#on-both-my-chromebooks)
-- [Good Articles](#good-articles)
-    - [Down The Rabbit Hole: How Hackers Exploit Weak SSH Credentials To Build DDoS Botnets by Christophe Tafani-Dereeper @christophetd 57 excellent slides](#down-the-rabbit-hole-how-hackers-exploit-weak-ssh-credentials-to-build-ddos-botnets-by-christophe-tafani-dereeper-christophetd-57-excellent-slides)
-    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22)
-    - [How to check open ports in Linux using the CLI](#how-to-check-open-ports-in-linux-using-the-cli)
-    - [Linux Find Out Which Process Is Listening Upon a Port](#linux-find-out-which-process-is-listening-upon-a-port)
-    - [Wikipedia List_of_TCP_and_UDP_port_numbers Ports 2222-2226 ESET Remote administrator](#wikipedia-list_of_tcp_and_udp_port_numbers-ports-2222-2226-eset-remote-administrator)
-    - [Netcat - How to listen on a TCP port using IPv6 address? example port 2222](#netcat---how-to-listen-on-a-tcp-port-using-ipv6-address-example-port-2222)
-    - [Recommends using ncat](#recommends-using-ncat)
-    - [But really prefers using socat](#but-really-prefers-using-socat)
-    - [ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.](#eset-bratislava-slovak-republic-handles-communication-with-agents-collecting-and-storing-application-data)
-    - [SpeedGuide.net Port 2222 Details](#speedguidenet-port-2222-details)
-- [Trying various commands](#trying-various-commands)
-  - [ESET Linux proxy install instructions example, is this similar to what is running?](#eset-linux-proxy-install-instructions-example-is-this-similar-to-what-is-running)
-    - [Example of an installation script from ESET](#example-of-an-installation-script-from-eset)
-    - [Simple way to start analysis](#simple-way-to-start-analysis)
-    - [How to install lsof](#how-to-install-lsof)
-  - [lsof Command Example](#lsof-command-example)
-    - [Type the command as follows:](#type-the-command-as-follows)
-    - [sudo lsof -T | grep 2222](#sudo-lsof--t--grep-2222)
-    - [netstat -tulpn](#netstat--tulpn)
-    - [sudo netstat -atupen](#sudo-netstat--atupen)
-    - [sudo netstat -atupen | grep EST](#sudo-netstat--atupen--grep-est)
-    - [sudo netstat -atupen | grep 2222](#sudo-netstat--atupen--grep-2222)
-    - [sudo apt-get install whois](#sudo-apt-get-install-whois)
-    - [whois 100.115.92.25](#whois-1001159225)
-    - [sudo ss -tunp](#sudo-ss--tunp)
-    - [sudo lsof -nP -i](#sudo-lsof--np--i)
-    - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222)
-    - [sudo apt-get install ncat](#sudo-apt-get-install-ncat)
-    - [sudo apt-get install socat](#sudo-apt-get-install-socat)
-    - [sudo grep -Rl "2222" /](#sudo-grep--rl-2222-)
-    - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222-1)
-    - [sudo lsof -nP -i](#sudo-lsof--np--i-1)
-  - [Find Out Current Working Directory Of a Process](#find-out-current-working-directory-of-a-process)
-    - [sudo ls -l /proc/96/exe](#sudo-ls--l-proc96exe)
-    - [whatis sshd](#whatis-sshd)
-    - [sudo pwdx 258](#sudo-pwdx-258)
-  - [Find Out Owner Of a Process on Linux](#find-out-owner-of-a-process-on-linux)
-    - [ps aux | grep 96](#ps-aux--grep-96)
-    - [ps aux | grep 258](#ps-aux--grep-258)
-    - [ps -eo pid,user,group,args,etime,lstart | grep '96'](#ps--eo-pidusergroupargsetimelstart--grep-96)
-    - [ps aux | grep notty](#ps-aux--grep-notty)
-    - [cat /proc/96/environ](#cat-proc96environ)
-  - [Help: I Discover an Open Port Which I Don’t Recognize At All](#help-i-discover-an-open-port-which-i-dont-recognize-at-all)
-    - [grep port /etc/services](#grep-port-etcservices)
-    - [sudo apt-get install fd-find](#sudo-apt-get-install-fd-find)
-    - [sudo apt-get install tcpdump](#sudo-apt-get-install-tcpdump)
-    - [sudo apt-get install nmap](#sudo-apt-get-install-nmap)
-    - [sudo apt-get install wireshark](#sudo-apt-get-install-wireshark)
-    - [After reboot, Check what ip address is using port 2222](#after-reboot-check-what-ip-address-is-using-port-2222)
-    - [Using wireshark, can filter on port and ip_address, can see vscode in the contents](#using-wireshark-can-filter-on-port-and-ip_address-can-see-vscode-in-the-contents)
-    - [can see vscode in the contents but turns out it is not port 2222](#can-see-vscode-in-the-contents-but-turns-out-it-is-not-port-2222)
-    - [This is traffic leaving 2222 and going to the mystery ip address](#this-is-traffic-leaving-2222-and-going-to-the-mystery-ip-address)
-  - [Nightmare write-up by 0xEA31 about port 2222 exploits](#nightmare-write-up-by-0xea31-about-port-2222-exploits)
-  - [nmap fast check out my own ip_addr](#nmap-fast-check-out-my-own-ip_addr)
-    - [nmap -T5 -p- -vvv -oA full_T5 100.115.92.195](#nmap--t5--p---vvv--oa-full_t5-10011592195)
-  - [nmap targeted (my own ip_id)](#nmap-targeted-my-own-ip_id)
-    - [nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195](#nmap--a--p802222---vvv--oa-targeted-10011592195)
-    - [The usual key indicators of port 2222](#the-usual-key-indicators-of-port-2222)
-    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-1)
-    - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-2)
-    - [nmap -sV -p2222 100.115.92.195](#nmap--sv--p2222-10011592195)
-    - [nmap -sV -p22 100.115.92.195](#nmap--sv--p22-10011592195)
-    - [To view available devices    sudo tcpdump -D](#to-view-available-devices----sudo-tcpdump--d)
-    - [sudo tcpdump -vvv -i eth0 port 2222](#sudo-tcpdump--vvv--i-eth0-port-2222)
-    - [sudo netstat -tunlp](#sudo-netstat--tunlp)
-    - [sudo tcpdump -v -i eth0 dst 100.115.92.25](#sudo-tcpdump--v--i-eth0-dst-1001159225)
-    - [sudo tcpdump -nAtvvvXX src port 2222](#sudo-tcpdump--natvvvxx-src-port-2222)
-    - [ps -aux](#ps--aux)
-    - [top -p 1859](#top--p-1859)
-    - [View the logs in /var/log](#view-the-logs-in-varlog)
-    - [dmesg | grep port](#dmesg--grep-port)
-- [check this after reboot to see if the logs are more verbose](#check-this-after-reboot-to-see-if-the-logs-are-more-verbose)
-    - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222)
-    - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
-    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
-    - [Nikto Installation](#nikto-installation)
-- [get the file](#get-the-file)
-- [unzip into a directory, run](#unzip-into-a-directory-run)
-- [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
-    - [Run nikto normally:](#run-nikto-normally)
-- [Main script is in program/](#main-script-is-in-program)
-- [Run using the shebang interpreter](#run-using-the-shebang-interpreter)
-- [Run using perl (if you forget to chmod)](#run-using-perl-if-you-forget-to-chmod)
-    - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
-- [Call it without arguments to display the full help](#call-it-without-arguments-to-display-the-full-help)
-- [Basic usage](#basic-usage)
-- [To save the report in a specific format, mount /tmp as a volume:](#to-save-the-report-in-a-specific-format-mount-tmp-as-a-volume)
-    - [ps -feww](#ps--feww)
-    - [systemctl status 2185](#systemctl-status-2185)
-    - [pstree](#pstree)
-    - [pstree -a](#pstree--a)
-    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
-    - [systemctl status 2185](#systemctl-status-2185-1)
-    - [ls -al /proc/](#ls--al-proc)
-    - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
-    - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
-    - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
-    - [socat/EXAMPLES](#socatexamples)
-    - [](#)
-    - [](#-1)
 
 # multipurpose relay for bidirectional data transfer
 
@@ -1447,10 +1344,332 @@ The above command connects to the remote server 192.168.100.5 by using port 3307
 However, all communication will be done on the Unix socket /var/lib/mysql/mysql.sock, and this makes it appear to be a local server.
 ```
 
-### 
+### How to inspect systemd journal files directly?
+https://www.linuxtopia.org/online_books/opensuse_guides/opensuse11.1_startup_guide/sec_trouble_info.html
 ```bash
+# As indicated in the other answer, these logs are regularly rotated, and may not stretch back as far as you might hope.
+journalctl --file /path/to/some/file.journal
+
+# The following is a list of the most commonly checked log files and what they typically contain.
+Log File                  Description
+~/.xsession-errors        Messages from the desktop applications currently running. The ~ is the home directory of the current user.
+/var/log/apparmor/        Log files from AppArmor, see Novell AppArmor Administration Guide, (↑ Novell AppArmor Administration Guide )
+/var/log/audit/audit.log  Log file from Audit to track any access to files, directories, or resources of your system and trace system calls.
+/var/log/boot.msg         Messages from the kernel during the boot process.
+/var/log/mail.*           Messages from the mail system.
+/var/log/messages         Ongoing messages from the kernel and system log daemon when running.
+/var/log/NetworkManager   Log file from NetworkManager to collect problems with network connectivity
+/var/log/warn             All messages from the kernel and system log daemon assigned WARNING level or higher.
+/var/log/wtmp             Binary file containing user login records for the current machine session. View it with last.
+
+# Apart from log files, your machine also supplies you with information about the running system
+
+File                Description
+/proc/cpuinfo       This displays processor information, including its type, make, model, and performance.
+/proc/dma           This shows which DMA channels are currently being used.
+/proc/interrupts    This shows which interrupts are in use and how many of each have been in use.
+/proc/iomem         This displays the status of I/O (input/output) memory.
+/proc/ioports       This shows which I/O ports are in use at the moment.
+/proc/meminfo       This displays memory status.
+/proc/modules       This displays the individual modules.
+/proc/mounts        This displays devices currently mounted.
+/proc/partitions    This shows the partitioning of all hard disks.
+/proc/version       This displays the current version of Linux.
+
+connorstom@penguin:/var/log/journal/34f82f01ee4a706f645f9d635f17bfe9$ journalctl --file  /var/log/journal/34f82f01ee4a706f645f9d635f17bfe9/user-1000.journal 
+
+Dec 03 04:23:34 penguin systemd[100]: sommelier@0.service: Main process exited, code=killed, status=15/TERM
+Dec 03 04:23:34 penguin systemd[100]: cros-garcon.service: Main process exited, code=killed, status=15/TERM
+-- Reboot --
+Dec 03 16:30:46 penguin systemd[99]: Listening on GnuPG network certificate management daemon.
+Dec 03 16:30:46 penguin systemd[99]: Reached target Paths.
+Dec 03 16:30:46 penguin systemd[99]: Starting D-Bus User Message Bus Socket.
+Dec 03 16:30:46 penguin systemd[99]: Created slice sommelier.slice.
+Dec 03 16:30:46 penguin systemd[99]: Reached target Timers.
+Dec 03 16:30:46 penguin systemd[99]: Listening on GnuPG cryptographic agent and passphrase cache (restricted).
+Dec 03 16:30:46 penguin systemd[99]: Created slice sommelier\x2dx.slice.
+Dec 03 16:30:46 penguin systemd[99]: Listening on Sound System.
+Dec 03 16:30:46 penguin systemd[99]: Listening on GnuPG cryptographic agent and passphrase cache.
+Dec 03 16:30:46 penguin systemd[99]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).
+Dec 03 16:30:46 penguin systemd[99]: Listening on GnuPG cryptographic agent (ssh-agent emulation).
+Dec 03 16:30:46 penguin systemd[99]: Listening on D-Bus User Message Bus Socket.
+
+connorstom@penguin:/var/log/journal/34f82f01ee4a706f645f9d635f17bfe9$ journalctl --file  /var/log/journal/34f82f01ee4a706f645f9d635f17bfe9/user-1000.journal | grep ' port '
+Dec 02 16:51:14 penguin sshd[255]: Received disconnect from 100.115.92.25 port 36440:11: disconnected by user
+Dec 02 16:51:14 penguin sshd[255]: Disconnected from user connorstom 100.115.92.25 port 36440
+Dec 03 16:30:49 penguin garcon[217]: [217]: Server listening on vsock port 10000
+Dec 04 15:20:18 penguin garcon[232]: [232]: Server listening on vsock port 10000
+Dec 04 18:32:57 penguin sshd[255]: Received disconnect from 100.115.92.25 port 44194:11: disconnected by user
+Dec 04 18:32:57 penguin sshd[255]: Disconnected from user connorstom 100.115.92.25 port 44194
+Dec 05 14:02:05 penguin garcon[217]: [217]: Server listening on vsock port 10000
 ```
 
-### 
+### When did a process first start?   ps -eo pid,lstart,cmd
 ```bash
+ps -eo pid,lstart,cmd
+
+ 2177 Sat Dec  5 22:36:48 2020 sshd: connorstom [priv]
+ 2183 Sat Dec  5 22:36:50 2020 sshd: connorstom@notty
+ 2184 Sat Dec  5 22:36:50 2020 sshd: connorstom@internal-sftp
+ 2632 Sun Dec  6 00:18:11 2020 ps -eo pid,lstart,cmd
+
+ # 
+connorstom@penguin:/var/log/journal/34f82f01ee4a706f645f9d635f17bfe9$ ps -p 2177 -lF
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN    RSS PSR STIME TTY          TIME CMD
+4 S root      2177    97  0  80   0 -  4248 -       7916   1 Dec05 ?        00:00:00 sshd: connorstom [priv]
+```
+## cat /proc/2177/status
+```bash
+connorstom@penguin:/var/log/journal/34f82f01ee4a706f645f9d635f17bfe9$ cat /proc/2177/status
+Name:   sshd
+Umask:  0022
+State:  S (sleeping)
+Tgid:   2177
+Ngid:   0
+Pid:    2177
+PPid:   97
+TracerPid:      0
+Uid:    0       0       0       0
+Gid:    0       0       0       0
+FDSize: 64
+Groups:  
+NStgid: 2177
+NSpid:  2177
+NSpgid: 2177
+NSsid:  2177
+VmPeak:    17024 kB
+VmSize:    16992 kB
+VmLck:         0 kB
+VmPin:         0 kB
+VmHWM:      8076 kB
+VmRSS:      7916 kB
+RssAnon:            1116 kB
+RssFile:            6800 kB
+RssShmem:              0 kB
+VmData:     1056 kB
+VmStk:       132 kB
+VmExe:       496 kB
+VmLib:      6724 kB
+VmPTE:        72 kB
+VmSwap:        0 kB
+HugetlbPages:          0 kB
+CoreDumping:    0
+THP_enabled:    1
+Threads:        1
+SigQ:   0/11100
+SigPnd: 0000000000000000
+ShdPnd: 0000000000000000
+SigBlk: 0000000000000000
+SigIgn: 0000000001001000
+SigCgt: 0000000180004003
+CapInh: 0000000000000000
+CapPrm: 0000003fffffffff
+CapEff: 0000003fffffffff
+CapBnd: 0000003fffffffff
+CapAmb: 0000000000000000
+NoNewPrivs:     0
+Seccomp:        2
+Speculation_Store_Bypass:       thread force mitigated
+Cpus_allowed:   3
+Cpus_allowed_list:      0-1
+Mems_allowed:   1
+Mems_allowed_list:      0
+voluntary_ctxt_switches:        26
+nonvoluntary_ctxt_switches:     118
+```
+
+# README-create-debian-startup-script.md
+https://gist.github.com/drmalex07/298ab26c06ecf401f66c
+
+The following is mostly taken from the example published at https://mkaz.com/2013/07/03/run-script-at-start-on-debian/
+
+Write an init.d script according to the the dependency-booting specification (see at https://wiki.debian.org/LSBInitScripts)
+```bash
+# say it foo.sh 
+# Place the script under /etc/init.d.
+
+ln -s /root/scripts/foo.sh /etc/init.d/foo 
+
+# Update the runlevel directories under /etc/rc*:
+
+update-rc.d foo defaults
+```
+
+```bash
+# foo.sh
+#! /bin/bash
+
+### BEGIN INIT INFO
+# Provides:          foo
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: foo service
+# Description:       Run Foo service
+### END INIT INFO
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting Foo..."
+    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./start-foo.sh'
+    ;;
+  stop)
+    echo "Stopping Foo..."
+    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./stop-foo.sh'
+    sleep 2
+    ;;
+  *)
+    echo "Usage: /etc/init.d/foo {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+```
+
+## Debian Boot Process 
+## Get To Know Linux: The /etc/init.d Directory
+```bash
+# If you look at the /etc directory you will find directories that are in the form rc#.d 
+# (Where # is a number reflects a specific initialization level - from 0 to 6). 
+# Within each of these directories is a number of other scripts that control processes. 
+# These scripts will either begin with a "K" or an "S". All "K" scripts are run before "S" scripts. 
+# And depending upon where the scripts are located will determine when the scripts initiate.
+```
+
+### All scripts executed by the init system are located in the directory /etc/init.d/
+https://wiki.debian.org/BootProcess
+```bash
+The meanings of all the runlevels are as follows:
+
+runlevel    directory           meaning
+N           none                System bootup (NONE). There is no /etc/rcN.d/ directory.
+0           /etc/rc0.d/         Halt the system.
+S           /etc/rcS.d/         Single-user mode on boot. The lower case s can be used as alias.
+1           /etc/rc1.d/         Single-user mode switched from multi-user mode.
+2 ... 5     /etc/rc{2,3,4,5}.d/ Multi-user mode. The Debian system does not pre-assign any special meaning differences among these.
+6           /etc/rc6.d/         Reboot the system.
+7 ... 9     /etc/rc{7,8,9}.d/   Valid multi-user mode but traditional Unix variants don’t use. 
+
+The configuration decision on the use of the runlevels between 2 and 5, is solely left to the system administrator on the Debian system.
+```
+
+## init. d contains the start/stop scripts the daemon while the system is running or during boot 
+```bash
+# d is the sub-directory of /etc directory in Linux file system. 
+# init. d basically contains the bunch of start/stop scripts which are used to control 
+# (start,stop,reload,restart) the daemon while the system is running or during boot.
+```
+
+### Get To Know Linux: The /etc/init.d Directory
+https://www.ghacks.net/2009/04/04/get-to-know-linux-the-etcinitd-directory/
+
+In order to control any of the scripts in init.d manually you have to have root (or sudo) access. Each script will be run as a command and the structure of the command will look like:
+
+```bash
+/etc/init.d/command OPTION
+```
+
+Where command is the actual command to run and OPTION can be one of the following:
+
+- start
+- stop
+- reload
+- restart
+- force-reload
+  
+Most often you will use either start, stop, or restart. So if you want to stop your network you can issue the command:
+
+```bash
+/etc/init.d/networking stop
+```
+
+Or if you make a change to your network and need to restart it, you could do so with the following command:
+
+```bash
+/etc/init.d/networking restart
+```
+
+Some of the more common init scripts in this directory are:
+
+- networking
+- samba
+- apache2
+- ftpd
+- sshd
+- dovecot
+- mysql
+  
+Of course there may be more often-used scripts in your directory - it depends upon what you have installed. The above list was taken from a Ubuntu Server 8.10 installation so a standard desktop installation would have a few less networking-type scripts.
+
+** But what about /etc/rc.local **
+
+There is a third option that I used to use quite a bit. This option is the /etc/rc.local script. This file runs after all other init level scripts have run, so it's safe to put various commands that you want to have issued upon startup. Many times I will place mounting instructions for things like nfs in this script. This is also a good place to place "troubleshooting" scripts in. For instance, once I had a machine that, for some reason, samba seemed to not want to start. Even afer checking to make sure the Samba daemon was setup to initialize at boot up. So instead of spending all of my time up front with this I simply placed the line:
+
+```bash
+/etc/init.d/samba start
+```
+
+in the /etc/rc.local script and Samba worked like a charm. Eventually I would come back and trouble shoot this issue.
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
+```
+
+###
+```bash
+
 ```
