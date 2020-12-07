@@ -87,17 +87,18 @@
     - [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
     - [Run nikto normally:](#run-nikto-normally)
     - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
-    - [ps -feww](#ps--feww)
-    - [systemctl status 2185](#systemctl-status-2185)
-    - [pstree](#pstree)
+- [ps -feww](#ps--feww)
+- [pstree](#pstree)
     - [pstree -a](#pstree--a)
-    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
-    - [systemctl status 2185](#systemctl-status-2185-1)
+- [Misc](#misc)
     - [ls -al /proc/](#ls--al-proc)
     - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
     - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
+- [Fuser](#fuser)
     - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
+- [Socat](#socat)
     - [socat/EXAMPLES](#socatexamples)
+- [systemd journal files](#systemd-journal-files)
     - [How to inspect systemd journal files directly?](#how-to-inspect-systemd-journal-files-directly)
     - [When did a process first start?   ps -eo pid,lstart,cmd](#when-did-a-process-first-start---ps--eo-pidlstartcmd)
   - [cat /proc/2177/status](#cat-proc2177status)
@@ -108,6 +109,11 @@
   - [init. d contains the start/stop scripts the daemon while the system is running or during boot](#init-d-contains-the-startstop-scripts-the-daemon-while-the-system-is-running-or-during-boot)
     - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory-1)
 - [Linux Runlevel programs](#linux-runlevel-programs)
+- [Chart: systemctl vs service tools](#chart-systemctl-vs-service-tools)
+    - [systemctl status 2185](#systemctl-status-2185)
+- [systemctl](#systemctl)
+    - [systemctl status 2185](#systemctl-status-2185-1)
+    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
   - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
   - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
   - [systemctl list-dependencies](#systemctl-list-dependencies)
@@ -1072,7 +1078,7 @@ docker run --rm sullo/nikto -h http://www.example.com
 docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
 ```
 
-### ps -feww
+# ps -feww
 ```bash
 # -ww    unlimited width
 # -ef    is the usual ps -ef
@@ -1089,22 +1095,7 @@ connors+  2211  2185  0 Dec04 ?        00:00:00     sshd: connorstom@notty
 
 ```
 
-### systemctl status 2185
-```bash
-connorstom@penguin:/proc/2185$ systemctl status 2185
-● session-3.scope - Session 3 of user connorstom
-   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
-Transient: yes
-   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 1h 56min ago
-    Tasks: 3
-   Memory: 1.3M
-   CGroup: /user.slice/user-1000.slice/session-3.scope
-           ├─2185 sshd: connorstom [priv]
-           ├─2211 sshd: connorstom@notty
-           └─2215 sshd: connorstom@internal-sftp
-```
-
-### pstree
+# pstree
 ```bash
 connorstom@penguin:/proc/2185$ pstree
 systemd─┬─agetty
@@ -1175,81 +1166,7 @@ systemd
   ├─systemd-logind
   └─systemd-udevd
 ```
-
-### systemctl status $(pgrep perl)
-```bash
-connorstom@penguin:/proc/2185$ systemctl status $(pgrep perl)
-● penguin
-    State: running
-     Jobs: 0 queued
-   Failed: 0 units
-    Since: Fri 2020-12-04 15:20:14 EST; 10h ago
-   CGroup: /
-           ├─user.slice
-           │ └─user-1000.slice
-           │   ├─user@1000.service
-           │   │ ├─sommelier\x2dx.slice
-           │   │ │ ├─sommelier-x@1.service
-           │   │ │ │ ├─143 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ │ └─176 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ └─sommelier-x@0.service
-           │   │ │   ├─146 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │   └─177 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ ├─sommelier.slice
-           │   │ │ ├─sommelier@0.service
-           │   │ │ │ └─160 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ └─sommelier@1.service
-           │   │ │   └─148 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ ├─init.scope
-           │   │ │ ├─ 98 /lib/systemd/systemd --user
-           │   │ │ └─101 (sd-pam)
-           │   │ ├─at-spi-dbus-bus.service
-           │   │ │ ├─398 /usr/lib/at-spi2-core/at-spi-bus-launcher
-           │   │ │ ├─403 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-addre
-           │   │ │ └─405 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
-           │   │ └─dbus.service
-           │   │   ├─397 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-onl
-           │   │   └─574 /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets
-           │   └─session-3.scope
-           │     ├─2185 sshd: connorstom [priv]
-           │     ├─2211 sshd: connorstom@notty
-           │     └─2215 sshd: connorstom@internal-sftp
-           ├─init.scope
-           │ └─1 /sbin/init
-           └─system.slice
-             ├─systemd-udevd.service
-             │ └─45 /lib/systemd/systemd-udevd
-             ├─networking.service
-             │ └─71 /sbin/dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df /var/lib/dhc
-             ├─polkit.service
-             │ └─259 /usr/lib/policykit-1/polkitd --no-debug
-             ├─systemd-journald.service
-             │ └─36 /lib/systemd/systemd-journald
-             ├─console-getty.service
-             │ └─95 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
-             ├─cros-sftp.service
-             │ └─96 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
-             ├─dbus.service
-             │ └─63 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-             └─systemd-logind.service
-               └─64 /lib/systemd/systemd-logind
-```
-
-### systemctl status 2185
-```bash
-connorstom@penguin:/proc/2185$ systemctl status 2185
-● session-3.scope - Session 3 of user connorstom
-   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
-Transient: yes
-   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 2h 11min ago
-    Tasks: 3
-   Memory: 1.3M
-   CGroup: /user.slice/user-1000.slice/session-3.scope
-           ├─2185 sshd: connorstom [priv]
-           ├─2211 sshd: connorstom@notty
-           └─2215 sshd: connorstom@internal-sftp
-```
-
+# Misc
 ### ls -al /proc/
 ```bash
 # ls -al /proc/
@@ -1283,6 +1200,7 @@ ESTAB    0        0            100.115.92.195:2222        100.115.92.25:33504
 LISTEN   0        128                    [::]:2222                 [::]:*     
 ```
 
+# Fuser
 ### sudo fuser -v -n tcp 2222
 ```bash
 connorstom@penguin:/proc/2185$ sudo fuser -v -n tcp 2222
@@ -1292,6 +1210,7 @@ connorstom@penguin:/proc/2185$ sudo fuser -v -n tcp 2222
                      connorstom   2211 F.... sshd
 ```
 
+# Socat
 ### socat/EXAMPLES
 https://github.com/craSH/socat/blob/master/EXAMPLES
 ```bash
@@ -1350,6 +1269,7 @@ The above command connects to the remote server 192.168.100.5 by using port 3307
 However, all communication will be done on the Unix socket /var/lib/mysql/mysql.sock, and this makes it appear to be a local server.
 ```
 
+# systemd journal files
 ### How to inspect systemd journal files directly?
 https://www.linuxtopia.org/online_books/opensuse_guides/opensuse11.1_startup_guide/sec_trouble_info.html
 ```bash
@@ -1640,11 +1560,104 @@ https://www.thegeekstuff.com/2011/02/linux-boot-process/
 - There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
 - For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
 
+# Chart: systemctl vs service tools 
 <br/>
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/systemctl-vs-service-tools.png?raw=true" align="center" alt="systemctl vs service tools" />
 <br/>
 &nbsp;
+
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 2h 11min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+# systemctl
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 1h 56min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+### systemctl status $(pgrep perl)
+```bash
+connorstom@penguin:/proc/2185$ systemctl status $(pgrep perl)
+● penguin
+    State: running
+     Jobs: 0 queued
+   Failed: 0 units
+    Since: Fri 2020-12-04 15:20:14 EST; 10h ago
+   CGroup: /
+           ├─user.slice
+           │ └─user-1000.slice
+           │   ├─user@1000.service
+           │   │ ├─sommelier\x2dx.slice
+           │   │ │ ├─sommelier-x@1.service
+           │   │ │ │ ├─143 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ │ └─176 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier-x@0.service
+           │   │ │   ├─146 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │   └─177 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─sommelier.slice
+           │   │ │ ├─sommelier@0.service
+           │   │ │ │ └─160 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier@1.service
+           │   │ │   └─148 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─init.scope
+           │   │ │ ├─ 98 /lib/systemd/systemd --user
+           │   │ │ └─101 (sd-pam)
+           │   │ ├─at-spi-dbus-bus.service
+           │   │ │ ├─398 /usr/lib/at-spi2-core/at-spi-bus-launcher
+           │   │ │ ├─403 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-addre
+           │   │ │ └─405 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
+           │   │ └─dbus.service
+           │   │   ├─397 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-onl
+           │   │   └─574 /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets
+           │   └─session-3.scope
+           │     ├─2185 sshd: connorstom [priv]
+           │     ├─2211 sshd: connorstom@notty
+           │     └─2215 sshd: connorstom@internal-sftp
+           ├─init.scope
+           │ └─1 /sbin/init
+           └─system.slice
+             ├─systemd-udevd.service
+             │ └─45 /lib/systemd/systemd-udevd
+             ├─networking.service
+             │ └─71 /sbin/dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df /var/lib/dhc
+             ├─polkit.service
+             │ └─259 /usr/lib/policykit-1/polkitd --no-debug
+             ├─systemd-journald.service
+             │ └─36 /lib/systemd/systemd-journald
+             ├─console-getty.service
+             │ └─95 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
+             ├─cros-sftp.service
+             │ └─96 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+             ├─dbus.service
+             │ └─63 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+             └─systemd-logind.service
+               └─64 /lib/systemd/systemd-logind
+```
+
+
 
 ## How To List Startup Services At Boot In Linux
 [How To List Startup Services At Boot In Linux](https://ostechnix.com/how-to-list-startup-services-at-boot-in-linux/)
