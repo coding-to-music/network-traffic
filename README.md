@@ -159,28 +159,28 @@ https://www.speedguide.net/port.php?port=2222
 
 # Overview of commands and purpose
 cat /proc/96/environ
-dsmeg
-fd-find
-fuser
-ls -l /proc/96/ext # working dir of a process
-lsof
-ncat
-netstat
-nikto
-nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
-ps -aux
-ps -eo pid,lstart,cmd # When did a process first start?
-ps -feww
-pstree
-socat
-ss
-sudo journalctl -u getty.target
-sudo journalctl | grep 2222
-systemctl status getty.target
-systemd journal files
-tcpdump
-whatis
-wireshark
+dsmeg  
+fd-find  
+fuser  
+ls -l /proc/96/ext # working dir of a process  
+lsof  
+ncat  
+netstat  
+nikto  
+nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195  
+ps -aux  
+ps -eo pid,lstart,cmd # When did a process first start?  
+ps -feww  
+pstree  
+socat  
+ss  
+sudo journalctl -u getty.target  
+sudo journalctl | grep 2222  
+systemctl status getty.target  
+systemd journal files  
+tcpdump  
+whatis  
+wireshark  
 
 
 
