@@ -107,6 +107,9 @@
     - [All scripts executed by the init system are located in the directory /etc/init.d/](#all-scripts-executed-by-the-init-system-are-located-in-the-directory-etcinitd)
   - [init. d contains the start/stop scripts the daemon while the system is running or during boot](#init-d-contains-the-startstop-scripts-the-daemon-while-the-system-is-running-or-during-boot)
     - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory-1)
+- [Linux Runlevel programs](#linux-runlevel-programs)
+  - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
+  - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
 
 # Good Articles
 
@@ -1614,9 +1617,88 @@ There is a third option that I used to use quite a bit. This option is the /etc/
 
 in the /etc/rc.local script and Samba worked like a charm. Eventually I would come back and trouble shoot this issue.
 
-###
-```bash
 
+
+
+
+
+here is text
+# Linux Runlevel programs
+https://www.thegeekstuff.com/2011/02/linux-boot-process/
+- When the Linux system is booting up, you might see various services getting started. For example, it might say “starting sendmail …. OK”. Those are the runlevel programs, executed from the run level directory as defined by your run level.
+- Depending on your default init level setting, the system will execute the programs from one of the following directories.
+  - Run level 0 – /etc/rc.d/rc0.d/
+  - Run level 1 – /etc/rc.d/rc1.d/
+  - Run level 2 – /etc/rc.d/rc2.d/
+  - Run level 3 – /etc/rc.d/rc3.d/
+  - Run level 4 – /etc/rc.d/rc4.d/
+  - Run level 5 – /etc/rc.d/rc5.d/
+  - Run level 6 – /etc/rc.d/rc6.d/
+- Please note that there are also symbolic links available for these directory under /etc directly. So, /etc/rc0.d is linked to /etc/rc.d/rc0.d.
+- Under the /etc/rc.d/rc*.d/ directories, you would see programs that start with S and K.
+- Programs starts with S are used during startup. S for startup.
+- Programs starts with K are used during shutdown. K for kill.
+- There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
+- For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
+
+
+## How To List Startup Services At Boot In Linux
+[How To List Startup Services At Boot In Linux](https://ostechnix.com/how-to-list-startup-services-at-boot-in-linux/)
+```bash
+sudo systemctl list-unit-files --type=service
+
+# To list only the enabled services at system boot, run:
+sudo systemctl list-unit-files --type=service --state=enabled --all
+
+UNIT FILE                              STATE  
+autovt@.service                        enabled
+dbus-org.freedesktop.timesync1.service enabled
+getty@.service                         enabled
+networking.service                     enabled
+ssh.service                            enabled
+sshd.service                           enabled
+systemd-timesyncd.service              enabled
+
+7 unit files listed.
+
+# To list only the disabled services at system boot, run:
+connorstom@penguin:~$ sudo systemctl list-unit-files --type=service --state=disabled --all
+UNIT FILE                              STATE   
+cros-sftp.service                      disabled
+debug-shell.service                    disabled
+ifupdown-wait-online.service           disabled
+nftables.service                       disabled
+rtkit-daemon.service                   disabled
+serial-getty@.service                  disabled
+systemd-boot-check-no-failures.service disabled
+systemd-resolved.service               disabled
+systemd-time-wait-sync.service         disabled
+
+9 unit files listed.
+
+# run the following command to list all services:
+
+connorstom@penguin:~$ sudo service --status-all
+ [ + ]  dbus
+ [ - ]  hwclock.sh
+ [ + ]  networking
+ [ + ]  procps
+ [ - ]  ssh
+ [ - ]  sudo
+ [ + ]  udev
+ [ - ]  x11-common
+
+# Here, the + indicates the service is running, and - indicates a stopped service. If you see ? in the output, the service state cannot be determined (for some reason).
+```
+## to stop a service **permanently** in debian
+[to stop a service **permanently** in debian](https://www.linuxquestions.org/questions/debian-26/chkconfig-equivalent-debian-346901/)
+```bash
+# using the 'update-rc.d' command which allows you to add/remove/set the symlinks in /etc/rc*.d that point to scripts in /etc/init.d.
+# To remove a script that starts a certain service run
+
+update-rc.d -f script_name remove
+
+# then you can keep or delete the corresponding script in /etc/init.d/
 ```
 
 ###
