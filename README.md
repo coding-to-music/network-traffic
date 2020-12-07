@@ -110,6 +110,9 @@
 - [Linux Runlevel programs](#linux-runlevel-programs)
   - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
   - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
+  - [systemctl list-dependencies](#systemctl-list-dependencies)
+    - [systemctl status getty.target](#systemctl-status-gettytarget)
+    - [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget)
 
 # Good Articles
 
@@ -1618,10 +1621,6 @@ There is a third option that I used to use quite a bit. This option is the /etc/
 in the /etc/rc.local script and Samba worked like a charm. Eventually I would come back and trouble shoot this issue.
 
 
-
-
-
-
 here is text
 # Linux Runlevel programs
 https://www.thegeekstuff.com/2011/02/linux-boot-process/
@@ -1641,6 +1640,11 @@ https://www.thegeekstuff.com/2011/02/linux-boot-process/
 - There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
 - For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
 
+<br/>
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/systemctl-vs-service-tools.png?raw=true" align="center" alt="systemctl vs service tools" />
+<br/>
+&nbsp;
 
 ## How To List Startup Services At Boot In Linux
 [How To List Startup Services At Boot In Linux](https://ostechnix.com/how-to-list-startup-services-at-boot-in-linux/)
@@ -1701,19 +1705,131 @@ update-rc.d -f script_name remove
 # then you can keep or delete the corresponding script in /etc/init.d/
 ```
 
-###
+## systemctl list-dependencies
+[How to list, start and stop services at boot time in Debian linux](https://net2.com/how-to-list-start-and-stop-services-at-boot-time-in-linux-ubuntu-debian/)
 ```bash
-
+connorstom@penguin:~$ systemctl list-dependencies
+default.target
+● ├─cros-sftp.service
+● ├─display-manager.service
+● ├─systemd-update-utmp-runlevel.service
+● └─multi-user.target
+●   ├─dbus.service
+●   ├─networking.service
+●   ├─ssh.service
+●   ├─systemd-ask-password-wall.path
+●   ├─systemd-logind.service
+●   ├─systemd-update-utmp-runlevel.service
+●   ├─systemd-user-sessions.service
+●   ├─basic.target
+●   │ ├─tmp.mount
+●   │ ├─paths.target
+●   │ ├─slices.target
+●   │ │ ├─-.slice
+●   │ │ └─system.slice
+●   │ ├─sockets.target
+●   │ │ ├─dbus.socket
+●   │ │ ├─systemd-initctl.socket
+●   │ │ ├─systemd-journald-audit.socket
+●   │ │ ├─systemd-journald-dev-log.socket
+●   │ │ ├─systemd-journald.socket
+●   │ │ ├─systemd-udevd-control.socket
+●   │ │ └─systemd-udevd-kernel.socket
+●   │ ├─sysinit.target
+●   │ │ ├─dev-hugepages.mount
+●   │ │ ├─dev-mqueue.mount
+●   │ │ ├─kmod-static-nodes.service
+●   │ │ ├─proc-sys-fs-binfmt_misc.automount
+●   │ │ ├─sys-fs-fuse-connections.mount
+●   │ │ ├─sys-kernel-config.mount
+●   │ │ ├─sys-kernel-debug.mount
+●   │ │ ├─systemd-ask-password-console.path
+●   │ │ ├─systemd-binfmt.service
+●   │ │ ├─systemd-hwdb-update.service
+●   │ │ ├─systemd-journal-flush.service
+●   │ │ ├─systemd-journald.service
+●   │ │ ├─systemd-machine-id-commit.service
+●   │ │ ├─systemd-modules-load.service
+●   │ │ ├─systemd-random-seed.service
+●   │ │ ├─systemd-sysctl.service
+●   │ │ ├─systemd-sysusers.service
+●   │ │ ├─systemd-timesyncd.service
+●   │ │ ├─systemd-tmpfiles-setup-dev.service
+●   │ │ ├─systemd-tmpfiles-setup.service
+●   │ │ ├─systemd-udev-trigger.service
+●   │ │ ├─systemd-udevd.service
+●   │ │ ├─systemd-update-utmp.service
+●   │ │ ├─cryptsetup.target
+●   │ │ ├─local-fs.target
+●   │ │ │ └─systemd-remount-fs.service
+●   │ │ └─swap.target
+●   │ └─timers.target
+●   │   ├─apt-daily-upgrade.timer
+●   │   ├─apt-daily.timer
+●   │   ├─man-db.timer
+●   │   └─systemd-tmpfiles-clean.timer
+●   ├─getty.target
+●   │ ├─console-getty.service
+●   │ ├─getty-static.service
+●   │ └─getty@tty1.service
+●   └─remote-fs.target
 ```
 
-###
+### systemctl status getty.target
 ```bash
+# systemctl status getty.target
+connorstom@penguin:~$ systemctl status getty.target
+● getty.target - Login Prompts
+   Loaded: loaded (/lib/systemd/system/getty.target; static; vendor preset: enabled)
+   Active: active since Mon 2020-12-07 17:11:12 EST; 15min ago
+     Docs: man:systemd.special(7)
+           man:systemd-getty-generator(8)
+           http://0pointer.de/blog/projects/serial-console.html
 
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+connorstom@penguin:~$ systemctl status timers.target
+● timers.target - Timers
+   Loaded: loaded (/lib/systemd/system/timers.target; static; vendor preset: enabled)
+   Active: active since Mon 2020-12-07 17:11:12 EST; 15min ago
+     Docs: man:systemd.special(7)
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+connorstom@penguin:~$ systemctl status cros-sftp.service
+● cros-sftp.service - CrOS SFTP service
+   Loaded: loaded (/usr/lib/systemd/system/cros-sftp.service; disabled; vendor preset: enabled)
+   Active: active (running) since Mon 2020-12-07 17:11:12 EST; 16min ago
+  Process: 93 ExecStartPre=/usr/sbin/sshd -t -f /dev/.ssh/sshd_config (code=exited, status=0/SUCCESS)
+ Main PID: 97 (sshd)
+    Tasks: 1 (limit: 3330)
+   Memory: 3.2M
+   CGroup: /system.slice/cros-sftp.service
+           └─97 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 ```
 
-###
+### sudo journalctl -u getty.target
 ```bash
+# sudo journalctl -u getty.target
 
+connorstom@penguin:~$ sudo journalctl -u getty.target
+-- Logs begin at Wed 2020-11-25 00:28:24 EST, end at Mon 2020-12-07 17:41:40 EST. --
+Nov 25 00:28:25 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 25 14:28:58 penguin systemd[1]: Reached target Login Prompts.
+Nov 26 04:27:35 penguin systemd[1]: Stopped target Login Prompts.
+-- Reboot --
+Nov 26 13:36:16 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 27 13:54:19 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 28 12:24:43 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 29 01:04:09 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 29 05:29:44 penguin systemd[1]: Reached target Login Prompts.
+-- Reboot --
+Nov 29 19:42:29 penguin systemd[1]: Reached target Login Prompts.
 ```
 
 ###
