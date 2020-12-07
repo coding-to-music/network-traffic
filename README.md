@@ -18,6 +18,7 @@
     - [But really prefers using socat](#but-really-prefers-using-socat)
     - [ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.](#eset-bratislava-slovak-republic-handles-communication-with-agents-collecting-and-storing-application-data)
     - [SpeedGuide.net Port 2222 Details](#speedguidenet-port-2222-details)
+- [Overview of commands and purpose](#overview-of-commands-and-purpose)
 - [Trying various commands](#trying-various-commands)
   - [ESET Linux proxy install instructions example, is this similar to what is running?](#eset-linux-proxy-install-instructions-example-is-this-similar-to-what-is-running)
     - [Example of an installation script from ESET](#example-of-an-installation-script-from-eset)
@@ -149,13 +150,46 @@ https://packages.debian.org/stretch/socat
 ### ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.
 https://www.eset.com/int/business/remote-administrator/
 
-
 ### SpeedGuide.net Port 2222 Details
 https://www.speedguide.net/port.php?port=2222
 
 <p align="center">
  <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/Port-2222-uses.png?raw=true" align="center" alt="SpeedGuide.net Port 2222 Details" />
  
+
+# Overview of commands and purpose
+cat /proc/96/environ
+dsmeg
+fd-find
+fuser
+ls -l /proc/96/ext # working dir of a process
+lsof
+ncat
+netstat
+nikto
+nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
+ps -aux
+ps -eo pid,lstart,cmd # When did a process first start?
+ps -feww
+pstree
+socat
+ss
+sudo journalctl -u getty.target
+sudo journalctl | grep 2222
+systemctl status getty.target
+systemd journal files
+tcpdump
+whatis
+wireshark
+
+
+
+
+
+
+
+
+
 # Trying various commands
 ## ESET Linux proxy install instructions example, is this similar to what is running?
 ### Example of an installation script from ESET
