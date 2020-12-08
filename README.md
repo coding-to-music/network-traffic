@@ -19,6 +19,34 @@
     - [ESET Bratislava, Slovak Republic Handles communication with agents, collecting and storing application data.](#eset-bratislava-slovak-republic-handles-communication-with-agents-collecting-and-storing-application-data)
     - [SpeedGuide.net Port 2222 Details](#speedguidenet-port-2222-details)
 - [Overview of commands and purpose](#overview-of-commands-and-purpose)
+- [cat /proc/96/environ](#cat-proc96environ)
+- [dsmeg](#dsmeg)
+- [fd-find](#fd-find)
+- [fuser](#fuser)
+- [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget)
+- [sudo journalctl # grep 2222](#sudo-journalctl--grep-2222)
+- [ls -l /proc/96/ext # working dir of a process](#ls--l-proc96ext--working-dir-of-a-process)
+- [lsof](#lsof)
+- [ncat](#ncat)
+- [netstat](#netstat)
+- [nikto](#nikto)
+- [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
+- [ps -aux](#ps--aux)
+- [ps -eo pid,lstart,cmd # When did a process first start?](#ps--eo-pidlstartcmd--when-did-a-process-first-start)
+- [ps -feww](#ps--feww)
+- [pstree](#pstree)
+- [socat](#socat)
+- [ss](#ss)
+- [systemctl status getty.target](#systemctl-status-gettytarget)
+- [systemd journal files](#systemd-journal-files)
+- [tcpdump](#tcpdump)
+- [whatis](#whatis)
+- [wireshark](#wireshark)
+    - [sudo apt-get install wireshark](#sudo-apt-get-install-wireshark)
+    - [Using wireshark, can filter on port and ip_address, can see vscode in the contents](#using-wireshark-can-filter-on-port-and-ip_address-can-see-vscode-in-the-contents)
+    - [can see vscode in the contents but turns out it is not port 2222](#can-see-vscode-in-the-contents-but-turns-out-it-is-not-port-2222)
+    - [This is traffic leaving 2222 and going to the mystery ip address](#this-is-traffic-leaving-2222-and-going-to-the-mystery-ip-address)
+- [End of document](#end-of-document)
 - [Trying various commands](#trying-various-commands)
   - [ESET Linux proxy install instructions example, is this similar to what is running?](#eset-linux-proxy-install-instructions-example-is-this-similar-to-what-is-running)
     - [Example of an installation script from ESET](#example-of-an-installation-script-from-eset)
@@ -50,17 +78,13 @@
     - [ps aux | grep 258](#ps-aux--grep-258)
     - [ps -eo pid,user,group,args,etime,lstart | grep '96'](#ps--eo-pidusergroupargsetimelstart--grep-96)
     - [ps aux | grep notty](#ps-aux--grep-notty)
-    - [cat /proc/96/environ](#cat-proc96environ)
+    - [cat /proc/96/environ](#cat-proc96environ-1)
   - [Help: I Discover an Open Port Which I Don’t Recognize At All](#help-i-discover-an-open-port-which-i-dont-recognize-at-all)
     - [grep port /etc/services](#grep-port-etcservices)
     - [sudo apt-get install fd-find](#sudo-apt-get-install-fd-find)
     - [sudo apt-get install tcpdump](#sudo-apt-get-install-tcpdump)
     - [sudo apt-get install nmap](#sudo-apt-get-install-nmap)
-    - [sudo apt-get install wireshark](#sudo-apt-get-install-wireshark)
     - [After reboot, Check what ip address is using port 2222](#after-reboot-check-what-ip-address-is-using-port-2222)
-    - [Using wireshark, can filter on port and ip_address, can see vscode in the contents](#using-wireshark-can-filter-on-port-and-ip_address-can-see-vscode-in-the-contents)
-    - [can see vscode in the contents but turns out it is not port 2222](#can-see-vscode-in-the-contents-but-turns-out-it-is-not-port-2222)
-    - [This is traffic leaving 2222 and going to the mystery ip address](#this-is-traffic-leaving-2222-and-going-to-the-mystery-ip-address)
   - [Nightmare write-up by 0xEA31 about port 2222 exploits](#nightmare-write-up-by-0xea31-about-port-2222-exploits)
   - [nmap fast check out my own ip_addr](#nmap-fast-check-out-my-own-ip_addr)
     - [nmap -T5 -p- -vvv -oA full_T5 100.115.92.195](#nmap--t5--p---vvv--oa-full_t5-10011592195)
@@ -76,30 +100,30 @@
     - [sudo netstat -tunlp](#sudo-netstat--tunlp)
     - [sudo tcpdump -v -i eth0 dst 100.115.92.25](#sudo-tcpdump--v--i-eth0-dst-1001159225)
     - [sudo tcpdump -nAtvvvXX src port 2222](#sudo-tcpdump--natvvvxx-src-port-2222)
-    - [ps -aux](#ps--aux)
+    - [ps -aux](#ps--aux-1)
     - [top -p 1859](#top--p-1859)
     - [View the logs in /var/log](#view-the-logs-in-varlog)
     - [dmesg | grep port](#dmesg--grep-port)
 - [check this after reboot to see if the logs are more verbose](#check-this-after-reboot-to-see-if-the-logs-are-more-verbose)
-    - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222)
+    - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222-1)
     - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
-    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
+    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195-1)
 - [Nikto Installation](#nikto-installation)
     - [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
     - [Run nikto normally:](#run-nikto-normally)
     - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
-- [ps -feww](#ps--feww)
-- [pstree](#pstree)
+- [ps -feww](#ps--feww-1)
+- [pstree](#pstree-1)
     - [pstree -a](#pstree--a)
 - [Misc](#misc)
     - [ls -al /proc/](#ls--al-proc)
     - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
     - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
-- [Fuser](#fuser)
+- [Fuser](#fuser-1)
     - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
-- [Socat](#socat)
+- [Socat](#socat-1)
     - [socat/EXAMPLES](#socatexamples)
-- [systemd journal files](#systemd-journal-files)
+- [systemd journal files](#systemd-journal-files-1)
     - [How to inspect systemd journal files directly?](#how-to-inspect-systemd-journal-files-directly)
     - [When did a process first start?   ps -eo pid,lstart,cmd](#when-did-a-process-first-start---ps--eo-pidlstartcmd)
   - [cat /proc/2177/status](#cat-proc2177status)
@@ -118,8 +142,8 @@
   - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
   - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
   - [systemctl list-dependencies](#systemctl-list-dependencies)
-    - [systemctl status getty.target](#systemctl-status-gettytarget)
-    - [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget)
+    - [systemctl status getty.target](#systemctl-status-gettytarget-1)
+    - [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget-1)
 
 # Good Articles
 
@@ -159,7 +183,7 @@ https://www.speedguide.net/port.php?port=2222
 
 # Overview of commands and purpose
 
-| command | Description and Comment |
+| Command | Description and Comment |
 |---------|-------------------------|
 | cat /proc/96/environ | textHere | 
 | dsmeg |  textHere | 
@@ -186,11 +210,133 @@ https://www.speedguide.net/port.php?port=2222
 | wireshark | textHere | 
 
 
+# cat /proc/96/environ 
+
+
+
+# dsmeg 
+
+
+
+# fd-find  
+
+
+
+# fuser  
+
+
+
+# sudo journalctl -u getty.target  
+
+
+
+# sudo journalctl # grep 2222 
+
+
+
+# ls -l /proc/96/ext # working dir of a process 
+
+
+
+# lsof  
+
+
+
+# ncat  
+
+
+
+# netstat 
+
+
+
+# nikto 
+
+
+
+# nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195    
+
+
+
+# ps -aux 
+
+
+
+# ps -eo pid,lstart,cmd # When did a process first start?    
+
+
+
+# ps -feww 
+
+
+
+# pstree 
+
+
+
+# socat 
+
+
+
+# ss 
+
+
+
+# systemctl status getty.target  
+
+
+
+# systemd journal files 
+
+
+
+# tcpdump 
+
+
+
+# whatis 
+
+
+
+# wireshark 
+
+### sudo apt-get install wireshark
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install wireshark
+
+// got this error: “couldnt run /usr/bin/dumpcap in child process
+
+sudo dpkg-reconfigure wireshark-common
+// answer Yes to letting non-supervisors use wireshark
+
+sudo chmod +x /usr/bin/dumpcap
+```
+
+### Using wireshark, can filter on port and ip_address, can see vscode in the contents 
+```bash
+// filters such as:
+tcp.port == 2222 || udp.port == 2222
+
+tcp contains 2222
+
+tcp contains vscode
+
+ip.addr == 100.115.92.25
+```
+
+### can see vscode in the contents but turns out it is not port 2222 
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/vscode-wireshark.png?raw=true" align="center" alt="vscode in the contents" />
+
+### This is traffic leaving 2222 and going to the mystery ip address 
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/wireshark-port-2222.png?raw=true" align="center" alt="vscode in the contents" />
 
 
 
 
 
+# End of document 
 
 
 # Trying various commands
@@ -632,17 +778,6 @@ Nmap done: 1 IP address (1 host up) scanned in 19.41 seconds
 ```
 
 
-### sudo apt-get install wireshark
-```bash
-connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install wireshark
-
-// got this error: “couldnt run /usr/bin/dumpcap in child process
-
-sudo dpkg-reconfigure wireshark-common
-// answer Yes to letting non-supervisors use wireshark
-
-sudo chmod +x /usr/bin/dumpcap
-```
 
 ### After reboot, Check what ip address is using port 2222 
 ```bash
@@ -675,27 +810,6 @@ sshd      97       root    4u  IPv6   3666      0t0  TCP *:2222 (LISTEN)
 sshd     245       root    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
 sshd     255 connorstom    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
 ```
-
-### Using wireshark, can filter on port and ip_address, can see vscode in the contents 
-```bash
-// filters such as:
-tcp.port == 2222 || udp.port == 2222
-
-tcp contains 2222
-
-tcp contains vscode
-
-ip.addr == 100.115.92.25
-```
-
-### can see vscode in the contents but turns out it is not port 2222 
-<p align="center">
- <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/vscode-wireshark.png?raw=true" align="center" alt="vscode in the contents" />
-
-### This is traffic leaving 2222 and going to the mystery ip address 
-<p align="center">
- <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/wireshark-port-2222.png?raw=true" align="center" alt="vscode in the contents" />
-
 ## Nightmare write-up by 0xEA31 about port 2222 exploits
 https://forum.hackthebox.eu/discussion/891/nightmare-write-up-by-0xea31
 
