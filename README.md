@@ -21,12 +21,12 @@
 - [Overview of commands and purpose](#overview-of-commands-and-purpose)
 - [cat /proc/96/environ](#cat-proc96environ)
 - [dsmeg](#dsmeg)
+    - [dmesg | grep port](#dmesg--grep-port)
 - [fd-find](#fd-find)
     - [sudo apt-get install fd-find](#sudo-apt-get-install-fd-find)
 - [Fuser](#fuser)
     - [sudo fuser -v -n tcp 2222](#sudo-fuser--v--n-tcp-2222)
 - [sudo journalctl # grep 2222](#sudo-journalctl--grep-2222)
-- [check this after reboot to see if the logs are more verbose](#check-this-after-reboot-to-see-if-the-logs-are-more-verbose)
     - [sudo journalctl | grep 2222](#sudo-journalctl--grep-2222-1)
 - [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget)
     - [sudo journalctl -u getty.target](#sudo-journalctl--u-gettytarget-1)
@@ -34,27 +34,42 @@
   - [Find Out Current Working Directory Of a Process](#find-out-current-working-directory-of-a-process)
     - [sudo ls -l /proc/96/exe](#sudo-ls--l-proc96exe)
 - [lsof](#lsof)
+    - [How to install lsof](#how-to-install-lsof)
+  - [lsof Command Example](#lsof-command-example)
+    - [Type the command as follows:](#type-the-command-as-follows)
     - [sudo lsof -T | grep 2222](#sudo-lsof--t--grep-2222)
-    - [sudo ss -tunp](#sudo-ss--tunp)
     - [sudo lsof -nP -i](#sudo-lsof--np--i)
     - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222)
-    - [sudo apt-get install socat](#sudo-apt-get-install-socat)
-    - [sudo grep -Rl "2222" /](#sudo-grep--rl-2222-)
-    - [sudo lsof -nP -i | grep 2222](#sudo-lsof--np--i--grep-2222-1)
     - [sudo lsof -nP -i](#sudo-lsof--np--i-1)
 - [ncat](#ncat)
     - [sudo apt-get install ncat](#sudo-apt-get-install-ncat)
+- [nmap](#nmap)
+    - [sudo apt-get install nmap](#sudo-apt-get-install-nmap)
+  - [Nightmare write-up by 0xEA31 about port 2222 exploits](#nightmare-write-up-by-0xea31-about-port-2222-exploits)
+  - [nmap fast check out my own ip_addr](#nmap-fast-check-out-my-own-ip_addr)
+    - [nmap -T5 -p- -vvv -oA full_T5 100.115.92.195](#nmap--t5--p---vvv--oa-full_t5-10011592195)
+    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
+    - [nmap -sV -p2222 100.115.92.195](#nmap--sv--p2222-10011592195)
+    - [nmap -sV -p22 100.115.92.195](#nmap--sv--p22-10011592195)
+  - [nmap targeted (my own ip_id)](#nmap-targeted-my-own-ip_id)
+    - [nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195](#nmap--a--p802222---vvv--oa-targeted-10011592195)
+    - [nmap -A -T4 scanme.nmap.org](#nmap--a--t4-scanmenmaporg)
 - [netstat](#netstat)
+    - [depends if you are sudo or not](#depends-if-you-are-sudo-or-not)
     - [sudo netstat -tunlp](#sudo-netstat--tunlp)
     - [netstat -tulpn](#netstat--tulpn)
     - [sudo netstat -atupen](#sudo-netstat--atupen)
     - [sudo netstat -atupen | grep EST](#sudo-netstat--atupen--grep-est)
     - [sudo netstat -atupen | grep 2222](#sudo-netstat--atupen--grep-2222)
 - [nikto](#nikto)
-- [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195)
+  - [Nikto Installation](#nikto-installation)
+    - [Run nikto normally:](#run-nikto-normally)
+    - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
+    - [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
+- [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195-1)
 - [ps -aux](#ps--aux)
-    - [ps -aux](#ps--aux-1)
   - [Find Out Owner Of a Process on Linux](#find-out-owner-of-a-process-on-linux)
+    - [ps -aux](#ps--aux-1)
     - [ps aux | grep 96](#ps-aux--grep-96)
     - [ps aux | grep 258](#ps-aux--grep-258)
     - [ps -eo pid,user,group,args,etime,lstart | grep '96'](#ps--eo-pidusergroupargsetimelstart--grep-96)
@@ -62,9 +77,32 @@
 - [ps -eo pid,lstart,cmd # When did a process first start?](#ps--eo-pidlstartcmd--when-did-a-process-first-start)
 - [ps -feww](#ps--feww)
 - [pstree](#pstree)
+    - [pstree -a](#pstree--a)
 - [sudo pwdx 258](#sudo-pwdx-258)
-- [socat](#socat)
+  - [need more info about pwdx](#need-more-info-about-pwdx)
+- [Socat](#socat)
+    - [sudo apt-get install socat](#sudo-apt-get-install-socat)
+    - [socat/EXAMPLES](#socatexamples)
 - [ss](#ss)
+    - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
+    - [sudo ss -tunp](#sudo-ss--tunp)
+    - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
+    - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss-1)
+- [init.d directory](#initd-directory)
+    - [README-create-debian-startup-script.md](#readme-create-debian-startup-scriptmd)
+  - [Debian Boot Process](#debian-boot-process)
+  - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory)
+    - [All scripts executed by the init system are located in the directory /etc/init.d/](#all-scripts-executed-by-the-init-system-are-located-in-the-directory-etcinitd)
+  - [init. d contains the start/stop scripts the daemon while the system is running or during boot](#init-d-contains-the-startstop-scripts-the-daemon-while-the-system-is-running-or-during-boot)
+    - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory-1)
+- [Linux Runlevel programs](#linux-runlevel-programs)
+- [Chart: systemctl vs service tools](#chart-systemctl-vs-service-tools)
+    - [systemctl status 2185](#systemctl-status-2185)
+- [systemctl](#systemctl)
+    - [systemctl status 2185](#systemctl-status-2185-1)
+    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
+  - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
+  - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
 - [systemctl status getty.target](#systemctl-status-gettytarget)
   - [systemctl list-dependencies](#systemctl-list-dependencies)
     - [systemctl status getty.target](#systemctl-status-gettytarget-1)
@@ -87,60 +125,36 @@
     - [can see vscode in the contents but turns out it is not port 2222](#can-see-vscode-in-the-contents-but-turns-out-it-is-not-port-2222)
     - [This is traffic leaving 2222 and going to the mystery ip address](#this-is-traffic-leaving-2222-and-going-to-the-mystery-ip-address)
 - [End of document](#end-of-document)
+        - [End of document](#end-of-document-1)
+        - [End of document](#end-of-document-2)
+        - [End of document](#end-of-document-3)
+        - [End of document](#end-of-document-4)
+        - [End of document](#end-of-document-5)
+        - [End of document](#end-of-document-6)
+        - [End of document](#end-of-document-7)
+        - [End of document](#end-of-document-8)
+        - [End of document](#end-of-document-9)
+        - [End of document](#end-of-document-10)
+        - [End of document](#end-of-document-11)
+        - [End of document](#end-of-document-12)
+        - [End of document](#end-of-document-13)
 - [Trying various commands](#trying-various-commands)
   - [ESET Linux proxy install instructions example, is this similar to what is running?](#eset-linux-proxy-install-instructions-example-is-this-similar-to-what-is-running)
     - [Example of an installation script from ESET](#example-of-an-installation-script-from-eset)
     - [Simple way to start analysis](#simple-way-to-start-analysis)
-    - [How to install lsof](#how-to-install-lsof)
-  - [lsof Command Example](#lsof-command-example)
-    - [Type the command as follows:](#type-the-command-as-follows)
     - [cat /proc/96/environ](#cat-proc96environ-1)
   - [Help: I Discover an Open Port Which I Don’t Recognize At All](#help-i-discover-an-open-port-which-i-dont-recognize-at-all)
     - [grep port /etc/services](#grep-port-etcservices)
-    - [sudo apt-get install nmap](#sudo-apt-get-install-nmap)
     - [After reboot, Check what ip address is using port 2222](#after-reboot-check-what-ip-address-is-using-port-2222)
-  - [Nightmare write-up by 0xEA31 about port 2222 exploits](#nightmare-write-up-by-0xea31-about-port-2222-exploits)
-  - [nmap fast check out my own ip_addr](#nmap-fast-check-out-my-own-ip_addr)
-    - [nmap -T5 -p- -vvv -oA full_T5 100.115.92.195](#nmap--t5--p---vvv--oa-full_t5-10011592195)
-  - [nmap targeted (my own ip_id)](#nmap-targeted-my-own-ip_id)
-    - [nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195](#nmap--a--p802222---vvv--oa-targeted-10011592195)
     - [The usual key indicators of port 2222](#the-usual-key-indicators-of-port-2222)
     - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-1)
+  - [openssh-server](#openssh-server)
     - [SSH Penetration Testing (Port 22)](#ssh-penetration-testing-port-22-2)
-    - [nmap -sV -p2222 100.115.92.195](#nmap--sv--p2222-10011592195)
-    - [nmap -sV -p22 100.115.92.195](#nmap--sv--p22-10011592195)
-    - [dmesg | grep port](#dmesg--grep-port)
     - [edit /etc/ssh/sshd_config](#edit-etcsshsshd_config)
-    - [nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195](#nmap--vv---reason--pn--a---osscan-guess---version-all--p--10011592195-1)
-- [Nikto Installation](#nikto-installation)
-    - [Starting a Nikto Web Scan](#starting-a-nikto-web-scan)
-    - [Run nikto normally:](#run-nikto-normally)
-    - [Nikto Run as a Docker container:](#nikto-run-as-a-docker-container)
-- [ps -feww](#ps--feww-1)
-- [pstree](#pstree-1)
-    - [pstree -a](#pstree--a)
 - [Misc](#misc)
     - [ls -al /proc/](#ls--al-proc)
-    - [sudo ss -lptn 'sport = :2222'](#sudo-ss--lptn-sport--2222)
-    - [socket statistics command (i.e. ss)](#socket-statistics-command-ie-ss)
-- [Socat](#socat-1)
-    - [socat/EXAMPLES](#socatexamples)
     - [When did a process first start?   ps -eo pid,lstart,cmd](#when-did-a-process-first-start---ps--eo-pidlstartcmd)
   - [cat /proc/2177/status](#cat-proc2177status)
-- [README-create-debian-startup-script.md](#readme-create-debian-startup-scriptmd)
-  - [Debian Boot Process](#debian-boot-process)
-  - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory)
-    - [All scripts executed by the init system are located in the directory /etc/init.d/](#all-scripts-executed-by-the-init-system-are-located-in-the-directory-etcinitd)
-  - [init. d contains the start/stop scripts the daemon while the system is running or during boot](#init-d-contains-the-startstop-scripts-the-daemon-while-the-system-is-running-or-during-boot)
-    - [Get To Know Linux: The /etc/init.d Directory](#get-to-know-linux-the-etcinitd-directory-1)
-- [Linux Runlevel programs](#linux-runlevel-programs)
-- [Chart: systemctl vs service tools](#chart-systemctl-vs-service-tools)
-    - [systemctl status 2185](#systemctl-status-2185)
-- [systemctl](#systemctl)
-    - [systemctl status 2185](#systemctl-status-2185-1)
-    - [systemctl status $(pgrep perl)](#systemctl-status-pgrep-perl)
-  - [How To List Startup Services At Boot In Linux](#how-to-list-startup-services-at-boot-in-linux)
-  - [to stop a service **permanently** in debian](#to-stop-a-service-permanently-in-debian)
 
 # Good Articles
 
@@ -212,8 +226,18 @@ https://www.speedguide.net/port.php?port=2222
 some stuff
 
 # dsmeg 
-
-
+### dmesg | grep port
+```bash
+    2.305095] 8021q: 802.1Q VLAN Support v1.8
+[    2.305295] 9pnet: Installing 9P2000 support
+[    2.776671] maitred: Server listening on port 8888
+[    2.791686] maitred: Using startup listener port: 7777
+[   11.239029] lxdbr0: port 1(veth95d428a9) entered blocking state
+[   11.240340] lxdbr0: port 1(veth95d428a9) entered disabled state
+[   11.630945] cgroup: lxd (282) created nested cgroup for controller "memory" which has incomplete hierarchy support. Nested cgroups may change behavior in the future.
+[   11.666585] lxdbr0: port 1(veth95d428a9) entered blocking state
+[   11.666828] lxdbr0: port 1(veth95d428a9) entered forwarding state
+```
 
 # fd-find  
 
@@ -223,7 +247,6 @@ connorstom@penguin:~/aprojects/network-traffic$ sudo apt-get install fd-find
 
 connorstom@penguin:~/aprojects/network-traffic$ fdfind 2222 /
 /home/connorstom/aprojects/network-traffic/Port-2222-uses.png
-
 ```
 
 
@@ -238,13 +261,8 @@ connorstom@penguin:/proc/2185$ sudo fuser -v -n tcp 2222
 ```
 
 
-
-
-
-
 # sudo journalctl # grep 2222 
 
-# check this after reboot to see if the logs are more verbose
 ### sudo journalctl | grep 2222
 ```bash
 sudo journalctl | grep 2222
@@ -262,7 +280,6 @@ Dec 02 14:08:00 penguin sshd[97]: Server listening on :: port 2222.
 Dec 03 16:30:46 penguin sshd[97]: Server listening on 0.0.0.0 port 2222.
 Dec 03 16:30:46 penguin sshd[97]: Server listening on :: port 2222.
 ```
-
 
 # sudo journalctl -u getty.target  
 
@@ -290,8 +307,6 @@ Nov 29 05:29:44 penguin systemd[1]: Reached target Login Prompts.
 Nov 29 19:42:29 penguin systemd[1]: Reached target Login Prompts.
 ```
 
-
-
 # ls -l /proc/96/ext # working dir of a process 
 
 ## Find Out Current Working Directory Of a Process
@@ -306,9 +321,27 @@ connorstom@penguin:~/aprojects/network-traffic$ sudo ls -l /proc/258/exe
 lrwxrwxrwx. 1 root root 0 Dec  1 16:52 /proc/258/exe -> /usr/sbin/sshd
 ```
 
-
-
 # lsof  
+### How to install lsof
+```bash
+sudo apt-get update
+
+sudo apt-get install lsof
+
+sudo lsof -T | grep 2222
+
+netstat -tulpn
+```
+
+## lsof Command Example
+### Type the command as follows:
+```bash
+lsof -i :portNumber 
+lsof -i tcp:portNumber 
+lsof -i udp:portNumber 
+lsof -i :80
+lsof -i :80 | grep LISTEN
+```
 
 ### sudo lsof -T | grep 2222
 ```bash
@@ -317,14 +350,6 @@ sshd        95                      root    3u     IPv4               2712      
 sshd        95                      root    4u     IPv6               2720       0t0     TCP *:2222
 sshd       212                      root    3u     IPv4               6211       0t0     TCP penguin.lxd:2222->100.115.92.25:43998
 sshd       221                connorstom    3u     IPv4               6211       0t0     TCP penguin.lxd:2222->100.115.92.25:43998
-```
-
-
-### sudo ss -tunp
-```bash
-Netid   State    Recv-Q    Send-Q        Local Address:Port         Peer Address:Port                                      
-tcp     ESTAB    0         0            100.115.92.195:40630        40.71.11.167:443      users:(("code",pid=379,fd=27))   
-tcp     ESTAB    0         0            100.115.92.195:2222        100.115.92.25:34294    users:(("sshd",pid=258,fd=3),("sshd",pid=243,fd=3))
 ```
 
 ### sudo lsof -nP -i
@@ -347,27 +372,6 @@ sshd     243       root    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->10
 sshd     258 connorstom    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
 ```
 
-### sudo apt-get install socat
-```bash
-connorstom@penguin:~/aprojects/br-build-site$ sudo apt-get install socat
-```
-
-### sudo grep -Rl "2222" /
-```bash
-connorstom@penguin:~/aprojects/br-build-site$ sudo grep -Rl "2222" /
-
-nothing came back, killed process
-```
-
-### sudo lsof -nP -i | grep 2222
-```bash
-connorstom@penguin:~/aprojects/network-traffic$ sudo lsof -nP -i | grep 2222
-sshd      96       root    3u  IPv4   3856      0t0  TCP *:2222 (LISTEN)
-sshd      96       root    4u  IPv6   3865      0t0  TCP *:2222 (LISTEN)
-sshd     243       root    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
-sshd     258 connorstom    3u  IPv4   6570      0t0  TCP 100.115.92.195:2222->100.115.92.25:34294 (ESTABLISHED)
-```
-
 ### sudo lsof -nP -i
 ```bash
 connorstom@penguin:~/aprojects/network-traffic$ sudo lsof -nP -i 
@@ -381,7 +385,6 @@ code     379 connorstom   33u  IPv4 150970      0t0  TCP 100.115.92.195:40786->4
 code     515 connorstom   85u  IPv4  15581      0t0  TCP 127.0.0.1:42451 (LISTEN)
 ```
 
-
 # ncat  
 
 ### sudo apt-get install ncat
@@ -389,8 +392,217 @@ code     515 connorstom   85u  IPv4  15581      0t0  TCP 127.0.0.1:42451 (LISTEN
 connorstom@penguin:~/aprojects/br-build-site$ sudo apt-get install ncat
 ```
 
-# netstat 
+# nmap  
+### sudo apt-get install nmap
+https://nmap.org/book/install.html#inst-already
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ nmap --version
+Nmap version 7.70 ( https://nmap.org )
+Platform: x86_64-pc-linux-gnu
+Compiled with: liblua-5.3.3 openssl-1.1.1d libssh2-1.8.0 libz-1.2.11 libpcre-8.39 libpcap-1.8.1 nmap-libdnet-1.12 ipv6
+Compiled without:
+Available nsock engines: epoll poll select
+```
 
+## Nightmare write-up by 0xEA31 about port 2222 exploits
+https://forum.hackthebox.eu/discussion/891/nightmare-write-up-by-0xea31
+
+## nmap fast check out my own ip_addr
+### nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+```bash
+connorstom@penguin:~/aprojects/network-traffic$ nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:28 EST
+Initiating Ping Scan at 03:28
+Scanning 100.115.92.195 [2 ports]
+Completed Ping Scan at 03:28, 0.00s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 03:28
+Completed Parallel DNS resolution of 1 host. at 03:28, 0.00s elapsed
+DNS resolution of 1 IPs took 0.00s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
+Initiating Connect Scan at 03:28
+Scanning penguin.lxd (100.115.92.195) [65535 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 03:28, 5.06s elapsed (65535 total ports)
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00033s latency).
+Scanned at 2020-12-03 03:28:04 EST for 5s
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
+PORT     STATE SERVICE      REASON
+2222/tcp open  EtherNetIP-1 syn-ack
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 5.22 seconds
+```
+### nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 16:01 EST
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+Initiating Parallel DNS resolution of 1 host. at 16:01
+Completed Parallel DNS resolution of 1 host. at 16:01, 0.02s elapsed
+Initiating Connect Scan at 16:01
+Scanning penguin.lxd (100.115.92.195) [65535 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 16:01, 6.22s elapsed (65535 total ports)
+Initiating Service scan at 16:01
+Scanning 1 service on penguin.lxd (100.115.92.195)
+Completed Service scan at 16:01, 0.02s elapsed (1 service on 1 host)
+NSE: Script scanning 100.115.92.195.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.20s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.01s elapsed
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received user-set (0.00035s latency).
+Scanned at 2020-12-04 16:01:50 EST for 6s
+Not shown: 65534 closed ports
+Reason: 65534 conn-refused
+PORT     STATE SERVICE REASON  VERSION
+2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:01
+Completed NSE at 16:01, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 7.83 seconds
+```
+### nmap -sV -p2222 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -sV -p2222 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up (0.00043s latency).
+
+PORT     STATE SERVICE VERSION
+2222/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1.62 seconds
+```
+
+### nmap -sV -p22 100.115.92.195
+```bash
+connorstom@penguin:~$ nmap -sV -p22 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up (0.00027s latency).
+
+PORT   STATE  SERVICE VERSION
+22/tcp closed ssh
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.88 seconds
+```
+
+## nmap targeted (my own ip_id)
+### nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+```bash 
+connorstom@penguin:~/aprojects/network-traffic$ nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:29 EST
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+Initiating Ping Scan at 03:29
+Scanning 100.115.92.195 [2 ports]
+Completed Ping Scan at 03:29, 0.00s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 03:29
+Completed Parallel DNS resolution of 1 host. at 03:29, 0.01s elapsed
+DNS resolution of 1 IPs took 0.01s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
+Initiating Connect Scan at 03:29
+Scanning penguin.lxd (100.115.92.195) [63315 ports]
+Discovered open port 2222/tcp on 100.115.92.195
+Completed Connect Scan at 03:29, 5.02s elapsed (63315 total ports)
+Initiating Service scan at 03:29
+Scanning 1 service on penguin.lxd (100.115.92.195)
+Completed Service scan at 03:29, 0.02s elapsed (1 service on 1 host)
+NSE: Script scanning 100.115.92.195.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.41s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.01s elapsed
+Nmap scan report for penguin.lxd (100.115.92.195)
+Host is up, received conn-refused (0.00053s latency).
+Scanned at 2020-12-03 03:29:28 EST for 5s
+Not shown: 63314 closed ports
+Reason: 63314 conn-refused
+PORT     STATE SERVICE REASON  VERSION
+2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
+|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 03:29
+Completed NSE at 03:29, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.95 seconds
+```
+
+### nmap -A -T4 scanme.nmap.org
+```bash 
+connorstom@penguin:~/aprojects/network-traffic$ nmap -A -T4 scanme.nmap.org
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-02 02:15 EST
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.093s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 992 closed ports
+PORT      STATE    SERVICE      VERSION
+22/tcp    open     ssh          OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   1024 ac:00:a0:1a:82:ff:cc:55:99:dc:67:2b:34:97:6b:75 (DSA)
+|   2048 20:3d:2d:44:62:2a:b0:5a:9d:b5:b3:05:14:c2:a6:b2 (RSA)
+|   256 96:02:bb:5e:57:54:1c:4e:45:2f:56:4c:4a:24:b2:57 (ECDSA)
+|_  256 33:fa:91:0f:e0:e1:7b:1f:6d:05:a2:b0:f1:54:41:56 (ED25519)
+25/tcp    filtered smtp
+80/tcp    open     http         Apache httpd 2.4.7 ((Ubuntu))
+|_http-server-header: Apache/2.4.7 (Ubuntu)
+|_http-title: Go ahead and ScanMe!
+135/tcp   filtered msrpc
+139/tcp   filtered netbios-ssn
+445/tcp   filtered microsoft-ds
+9929/tcp  open     nping-echo   Nping echo
+31337/tcp open     tcpwrapped
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 19.41 seconds
+```
+
+
+# netstat 
+### depends if you are sudo or not
 ### sudo netstat -tunlp
 ```bash
 connorstom@penguin:~/aprojects/network-traffic$ sudo netstat -tunlp
@@ -445,16 +657,65 @@ tcp6       0      0 :::2222                 :::*                    LISTEN      
 ```
 
 
-
 # nikto 
+Nikto web server scanner  - https://cirt.net/Nikto2
+
+Full documentation - https://cirt.net/nikto2-docs/
 
 
+## Nikto Installation
+
+```bash
+# get the file
+test@ubuntu:~$ wget https://github.com/sullo/nikto/archive/master.zip
+```
+
+```bash
+# unzip into a directory, run
+test@ubuntu:~$ unzip master.zip
+test@ubuntu:~$ cd nikto-master/program
+test@ubuntu:~/nikto-master/program$ perl nikto.pl
+```
+
+### Run nikto normally:
+
+```bash
+git clone https://github.com/sullo/nikto
+# Main script is in program/
+cd nikto/program
+# Run using the shebang interpreter
+./nikto.pl -h http://www.example.com
+# Run using perl (if you forget to chmod)
+perl nikto.pl -h http://www.example.com
+
+./nikto.pl -h $IPADDRESS
+```
+
+### Nikto Run as a Docker container:
+
+```bash
+git clone https://github.com/sullo/nikto.git
+cd nikto
+docker build -t sullo/nikto .
+# Call it without arguments to display the full help
+docker run --rm sullo/nikto
+# Basic usage
+docker run --rm sullo/nikto -h http://www.example.com
+# To save the report in a specific format, mount /tmp as a volume:
+docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
+```
+
+### Starting a Nikto Web Scan
+```bash
+perl nikto.pl -host https://nikto-test.com
+```
 
 # nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195    
 
 
 
 # ps -aux 
+## Find Out Owner Of a Process on Linux
 
 ### ps -aux
 ```bash
@@ -464,7 +725,6 @@ connors+  1865  0.0  0.0  16992  2180 ?        S    Dec03   0:00 sshd: connorsto
 connors+  1866  0.0  0.0  16992  2192 ?        Ss   Dec03   0:00 sshd: connorstom@internal-sftp
 ```
 
-## Find Out Owner Of a Process on Linux
 ### ps aux | grep 96
 ```bash
 connorstom@penguin:~/aprojects/network-traffic$ ps aux | grep 96
@@ -478,7 +738,6 @@ connors+   533  0.0  0.1   7916  3396 pts/0    Ss+  13:45   0:00 /bin/bash
 connors+  3696  0.0  0.1   8048  4600 pts/2    Ss   14:58   0:00 /bin/bash
 root      6358  0.0  0.1  10296  3236 pts/1    S+   16:37   0:00 sudo grep -Rl 2222 /
 connors+  6529  0.0  0.0   6076   896 pts/2    S+   16:54   0:00 grep 96
-
 ```
 
 ### ps aux | grep 258
@@ -512,20 +771,101 @@ connors+   258  0.0  0.0  16992  2356 ?        S    13:45   0:00 sshd: connorsto
 connors+  6574  0.0  0.0   6208   828 pts/2    S+   17:02   0:00 grep notty
 ```
 
-
-
 # ps -eo pid,lstart,cmd # When did a process first start?    
 
 
 
-# ps -feww 
+# ps -feww
+```bash
+# -ww    unlimited width
+# -ef    is the usual ps -ef
+# -e     Select all processes
+# -f     Do full-format listing
+# -H     Show process hierarchy (forest)
+ps -feww
 
+connorstom@penguin:~$ ps -Hf -p 2185,96,2211
+UID        PID  PPID  C STIME TTY          TIME CMD
+root        96     1  0 Dec04 ?        00:00:00 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+root      2185    96  0 Dec04 ?        00:00:00   sshd: connorstom [priv]
+connors+  2211  2185  0 Dec04 ?        00:00:00     sshd: connorstom@notty
+```
 
+# pstree
+```bash
+connorstom@penguin:/proc/2185$ pstree
+systemd─┬─agetty
+        ├─dbus-daemon
+        ├─dhclient
+        ├─polkitd───2*[{polkitd}]
+        ├─sshd───sshd───sshd───sshd
+        ├─systemd─┬─(sd-pam)
+        │         ├─at-spi-bus-laun─┬─dbus-daemon
+        │         │                 └─3*[{at-spi-bus-laun}]
+        │         ├─at-spi2-registr───2*[{at-spi2-registr}]
+        │         ├─dbus-daemon
+        │         ├─gnome-keyring-d───3*[{gnome-keyring-d}]
+        │         ├─2*[ld-linux-x86-64───ld-linux-x86-64───4*[{ld-linux-x86-64}]]
+        │         ├─2*[ld-linux-x86-64]
+        │         └─ld-linux-x86-64─┬─code─┬─code───code───5*[{code}]
+        │                           │      ├─code
+        │                           │      ├─code───6*[{code}]
+        │                           │      ├─code─┬─bash
+        │                           │      │      ├─code─┬─code───7*[{code}]
+        │                           │      │      │      └─16*[{code}]
+        │                           │      │      ├─code───11*[{code}]
+        │                           │      │      └─20*[{code}]
+        │                           │      ├─code─┬─bash───pstree
+        │                           │      │      ├─code───16*[{code}]
+        │                           │      │      └─20*[{code}]
+        │                           │      ├─code─┬─bash
+        │                           │      │      ├─code───16*[{code}]
+        │                           │      │      └─19*[{code}]
+        │                           │      ├─code───18*[{code}]
+        │                           │      └─30*[{code}]
+        │                           ├─ld-linux-x86-64───bash
+        │                           └─10*[{ld-linux-x86-64}]
+        ├─systemd-journal
+        ├─systemd-logind
+        └─systemd-udevd
+```
 
-# pstree 
+### pstree -a
+```bash
+# -a Show command line arguments
+connorstom@penguin:/proc/2185$ pstree -a
+systemd
+  ├─agetty -o -p -- \\u --noclear --keep-baud console 115200,38400,9600 vt220
+  ├─dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+  ├─dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df/var/lib/dhcp/dhclient6.eth0.lea
+  ├─polkitd --no-debug
+  │   └─2*[{polkitd}]
+  ├─sshd -D -f /dev/.ssh/sshd_config
+  │   └─sshd                      
+  │       └─sshd                       
+  │           └─sshd               
+  ├─systemd --user
+  │   ├─(sd-pam)  
+  │   ├─at-spi-bus-laun
+  │   │   ├─dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
+  │   │   └─3*[{at-spi-bus-laun}]
+  │   ├─at-spi2-registr --use-gnome-session
+  │   │   └─2*[{at-spi2-registr}]
+  │   ├─dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+  │   ├─gnome-keyring-d --start --foreground --components=secrets
+  │   │   └─3*[{gnome-keyring-d}]
+  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  │   │   └─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  │   │       └─4*[{ld-linux-x86-64}]
+  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
+  ├─systemd-journal
+  ├─systemd-logind
+  └─systemd-udevd
+```
 
 
 # sudo pwdx 258
+## need more info about pwdx
 ```bash
 connorstom@penguin:~/aprojects/network-traffic$ pwdx 258
 258: Permission denied
@@ -535,13 +875,413 @@ connorstom@penguin:~/aprojects/network-traffic$ sudo pwdx 96
 96: /
 ```
 
+# Socat
 
-# socat 
+### sudo apt-get install socat
+```bash
+connorstom@penguin:~/aprojects/br-build-site$ sudo apt-get install socat
+```
+
+### socat/EXAMPLES
+https://github.com/craSH/socat/blob/master/EXAMPLES
+```bash
+# socat- [network-traffic](#network-traffic)
+
+# multipurpose relay for bidirectional data transfer
+
+# Socat (for SOcket CAT) establishes two bidirectional byte streams and transfers data between them. 
+
+# Data channels may be files, pipes, devices (terminal or modem, etc.), or sockets (Unix, IPv4, IPv6, raw, UDP, TCP, SSL).
+
+#Examples of using socat
+#Let's get started with some basic examples of using socat for various connections.
+
+1. Connect to TCP port 80 on the local or remote system:
+
+# socat - TCP4:www.example.com:80
+In this case, socat transfers data between STDIO (-) and a TCP4 connection to port 80 on a host named www.example.com.
+
+2. Use socat as a TCP port forwarder:
+
+For a single connection, enter:
+
+# socat TCP4-LISTEN:81 TCP4:192.168.1.10:80
+For multiple connections, use the fork option as used in the examples below:
+
+# socat TCP4-LISTEN:81,fork,reuseaddr TCP4:TCP4:192.168.1.10:80
+This example listens on port 81, accepts connections, and forwards the connections to port 80 on the remote host.
+
+# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock 
+The above example listens on port 3307, accepts connections, and forwards the connections to a Unix socket on the remote host.
+
+3. Implement a simple network-based message collector:
+
+# socat -u TCP4-LISTEN:3334,reuseaddr,fork OPEN:/tmp/test.log,creat,append
+In this example, when a client connects to port 3334, a new child process is generated. All data sent by the clients is appended to the file /tmp/test.log. If the file does not exist, socat creates it. The option reuseaddr allows an immediate restart of the server process.
+
+4. Send a broadcast to the local network:
+
+# socat - UDP4-DATAGRAM:224.255.0.1:6666,bind=:6666,ip-add-membership=224.255.0.1:eth0
+In this case, socat transfers data from stdin to the specified multicast address using UDP over port 6666 for both the local and remote connections. The command also tells the interface eth0 to accept multicast packets for the given group.
+
+Practical uses for socat
+Socat is a great tool for troubleshooting. It is also handy for easily making remote connections. Practically, I have used socat for remote MySQL connections. In the example below, I demonstrate how I use socat to connect my web application to a remote MySQL server by connecting over the local socket.
+
+1. On my remote MySQL server, I enter:
+
+# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock &
+This command starts socat and configures it to listen by using port 3307.
+
+2. On my webserver, I enter:
+
+# socat UNIX-LISTEN:/var/lib/mysql/mysql.sock,fork,reuseaddr,unlink-early,user=mysql,group=mysql,mode=777 TCP:192.168.100.5:3307 &
+The above command connects to the remote server 192.168.100.5 by using port 3307.
+
+However, all communication will be done on the Unix socket /var/lib/mysql/mysql.sock, and this makes it appear to be a local server.
+```
+
+# ss  
+### socket statistics command (i.e. ss) 
+### sudo ss -tunp
+```bash
+Netid   State    Recv-Q    Send-Q        Local Address:Port         Peer Address:Port                                      
+tcp     ESTAB    0         0            100.115.92.195:40630        40.71.11.167:443      users:(("code",pid=379,fd=27))   
+tcp     ESTAB    0         0            100.115.92.195:2222        100.115.92.25:34294    users:(("sshd",pid=258,fd=3),("sshd",pid=243,fd=3))
+```
+
+### sudo ss -lptn 'sport = :2222'
+```bash
+connorstom@penguin:/proc/2185$ sudo ss -lptn 'sport = :2222'
+State       Recv-Q      Send-Q           Local Address:Port            Peer Address:Port                                         
+LISTEN      0           128                    0.0.0.0:2222                 0.0.0.0:*          users:(("sshd",pid=96,fd=3))      
+LISTEN      0           128                       [::]:2222                    [::]:*          users:(("sshd",pid=96,fd=4))  
+```
+
+### socket statistics command (i.e. ss) 
+```bash
+# Here is an example of execution:
+
+connorstom@penguin:/proc/2185$ ss -tanp | grep '222\|State'
+State    Recv-Q   Send-Q        Local Address:Port         Peer Address:Port                       
+LISTEN   0        128                 0.0.0.0:2222              0.0.0.0:*            
+ESTAB    0        0            100.115.92.195:2222        100.115.92.25:33504
+LISTEN   0        128                    [::]:2222                 [::]:*     
+```
+
+# init.d directory
+### README-create-debian-startup-script.md
+https://gist.github.com/drmalex07/298ab26c06ecf401f66c
+
+The following is mostly taken from the example published at https://mkaz.com/2013/07/03/run-script-at-start-on-debian/
+
+Write an init.d script according to the the dependency-booting specification (see at https://wiki.debian.org/LSBInitScripts)
+```bash
+# say it foo.sh 
+# Place the script under /etc/init.d.
+
+ln -s /root/scripts/foo.sh /etc/init.d/foo 
+
+# Update the runlevel directories under /etc/rc*:
+
+update-rc.d foo defaults
+```
+
+```bash
+# foo.sh
+#! /bin/bash
+
+### BEGIN INIT INFO
+# Provides:          foo
+# Required-Start:    $local_fs $network
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: foo service
+# Description:       Run Foo service
+### END INIT INFO
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting Foo..."
+    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./start-foo.sh'
+    ;;
+  stop)
+    echo "Stopping Foo..."
+    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./stop-foo.sh'
+    sleep 2
+    ;;
+  *)
+    echo "Usage: /etc/init.d/foo {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+```
+
+## Debian Boot Process 
+## Get To Know Linux: The /etc/init.d Directory
+```bash
+# If you look at the /etc directory you will find directories that are in the form rc#.d 
+# (Where # is a number reflects a specific initialization level - from 0 to 6). 
+# Within each of these directories is a number of other scripts that control processes. 
+# These scripts will either begin with a "K" or an "S". All "K" scripts are run before "S" scripts. 
+# And depending upon where the scripts are located will determine when the scripts initiate.
+```
+
+### All scripts executed by the init system are located in the directory /etc/init.d/
+https://wiki.debian.org/BootProcess
+```bash
+The meanings of all the runlevels are as follows:
+
+runlevel    directory           meaning
+N           none                System bootup (NONE). There is no /etc/rcN.d/ directory.
+0           /etc/rc0.d/         Halt the system.
+S           /etc/rcS.d/         Single-user mode on boot. The lower case s can be used as alias.
+1           /etc/rc1.d/         Single-user mode switched from multi-user mode.
+2 ... 5     /etc/rc{2,3,4,5}.d/ Multi-user mode. The Debian system does not pre-assign any special meaning differences among these.
+6           /etc/rc6.d/         Reboot the system.
+7 ... 9     /etc/rc{7,8,9}.d/   Valid multi-user mode but traditional Unix variants don’t use. 
+
+The configuration decision on the use of the runlevels between 2 and 5, is solely left to the system administrator on the Debian system.
+```
+
+## init. d contains the start/stop scripts the daemon while the system is running or during boot 
+```bash
+# d is the sub-directory of /etc directory in Linux file system. 
+# init. d basically contains the bunch of start/stop scripts which are used to control 
+# (start,stop,reload,restart) the daemon while the system is running or during boot.
+```
+
+### Get To Know Linux: The /etc/init.d Directory
+https://www.ghacks.net/2009/04/04/get-to-know-linux-the-etcinitd-directory/
+
+In order to control any of the scripts in init.d manually you have to have root (or sudo) access. Each script will be run as a command and the structure of the command will look like:
+
+```bash
+/etc/init.d/command OPTION
+```
+
+Where command is the actual command to run and OPTION can be one of the following:
+
+- start
+- stop
+- reload
+- restart
+- force-reload
+  
+Most often you will use either start, stop, or restart. So if you want to stop your network you can issue the command:
+
+```bash
+/etc/init.d/networking stop
+```
+
+Or if you make a change to your network and need to restart it, you could do so with the following command:
+
+```bash
+/etc/init.d/networking restart
+```
+
+Some of the more common init scripts in this directory are:
+
+- networking
+- samba
+- apache2
+- ftpd
+- sshd
+- dovecot
+- mysql
+  
+Of course there may be more often-used scripts in your directory - it depends upon what you have installed. The above list was taken from a Ubuntu Server 8.10 installation so a standard desktop installation would have a few less networking-type scripts.
+
+** But what about /etc/rc.local **
+
+There is a third option that I used to use quite a bit. This option is the /etc/rc.local script. This file runs after all other init level scripts have run, so it's safe to put various commands that you want to have issued upon startup. Many times I will place mounting instructions for things like nfs in this script. This is also a good place to place "troubleshooting" scripts in. For instance, once I had a machine that, for some reason, samba seemed to not want to start. Even afer checking to make sure the Samba daemon was setup to initialize at boot up. So instead of spending all of my time up front with this I simply placed the line:
+
+```bash
+/etc/init.d/samba start
+```
+
+in the /etc/rc.local script and Samba worked like a charm. Eventually I would come back and trouble shoot this issue.
+
+
+here is text
+# Linux Runlevel programs
+https://www.thegeekstuff.com/2011/02/linux-boot-process/
+- When the Linux system is booting up, you might see various services getting started. For example, it might say “starting sendmail …. OK”. Those are the runlevel programs, executed from the run level directory as defined by your run level.
+- Depending on your default init level setting, the system will execute the programs from one of the following directories.
+  - Run level 0 – /etc/rc.d/rc0.d/
+  - Run level 1 – /etc/rc.d/rc1.d/
+  - Run level 2 – /etc/rc.d/rc2.d/
+  - Run level 3 – /etc/rc.d/rc3.d/
+  - Run level 4 – /etc/rc.d/rc4.d/
+  - Run level 5 – /etc/rc.d/rc5.d/
+  - Run level 6 – /etc/rc.d/rc6.d/
+- Please note that there are also symbolic links available for these directory under /etc directly. So, /etc/rc0.d is linked to /etc/rc.d/rc0.d.
+- Under the /etc/rc.d/rc*.d/ directories, you would see programs that start with S and K.
+- Programs starts with S are used during startup. S for startup.
+- Programs starts with K are used during shutdown. K for kill.
+- There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
+- For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
+
+# Chart: systemctl vs service tools 
+<br/>
+<p align="center">
+ <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/systemctl-vs-service-tools.png?raw=true" align="center" alt="systemctl vs service tools" />
+<br/>
+&nbsp;
+
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 2h 11min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+# systemctl
+### systemctl status 2185
+```bash
+connorstom@penguin:/proc/2185$ systemctl status 2185
+● session-3.scope - Session 3 of user connorstom
+   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
+Transient: yes
+   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 1h 56min ago
+    Tasks: 3
+   Memory: 1.3M
+   CGroup: /user.slice/user-1000.slice/session-3.scope
+           ├─2185 sshd: connorstom [priv]
+           ├─2211 sshd: connorstom@notty
+           └─2215 sshd: connorstom@internal-sftp
+```
+
+### systemctl status $(pgrep perl)
+```bash
+connorstom@penguin:/proc/2185$ systemctl status $(pgrep perl)
+● penguin
+    State: running
+     Jobs: 0 queued
+   Failed: 0 units
+    Since: Fri 2020-12-04 15:20:14 EST; 10h ago
+   CGroup: /
+           ├─user.slice
+           │ └─user-1000.slice
+           │   ├─user@1000.service
+           │   │ ├─sommelier\x2dx.slice
+           │   │ │ ├─sommelier-x@1.service
+           │   │ │ │ ├─143 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ │ └─176 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier-x@0.service
+           │   │ │   ├─146 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │   └─177 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─sommelier.slice
+           │   │ │ ├─sommelier@0.service
+           │   │ │ │ └─160 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ │ └─sommelier@1.service
+           │   │ │   └─148 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
+           │   │ ├─init.scope
+           │   │ │ ├─ 98 /lib/systemd/systemd --user
+           │   │ │ └─101 (sd-pam)
+           │   │ ├─at-spi-dbus-bus.service
+           │   │ │ ├─398 /usr/lib/at-spi2-core/at-spi-bus-launcher
+           │   │ │ ├─403 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-addre
+           │   │ │ └─405 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
+           │   │ └─dbus.service
+           │   │   ├─397 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-onl
+           │   │   └─574 /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets
+           │   └─session-3.scope
+           │     ├─2185 sshd: connorstom [priv]
+           │     ├─2211 sshd: connorstom@notty
+           │     └─2215 sshd: connorstom@internal-sftp
+           ├─init.scope
+           │ └─1 /sbin/init
+           └─system.slice
+             ├─systemd-udevd.service
+             │ └─45 /lib/systemd/systemd-udevd
+             ├─networking.service
+             │ └─71 /sbin/dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df /var/lib/dhc
+             ├─polkit.service
+             │ └─259 /usr/lib/policykit-1/polkitd --no-debug
+             ├─systemd-journald.service
+             │ └─36 /lib/systemd/systemd-journald
+             ├─console-getty.service
+             │ └─95 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
+             ├─cros-sftp.service
+             │ └─96 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
+             ├─dbus.service
+             │ └─63 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+             └─systemd-logind.service
+               └─64 /lib/systemd/systemd-logind
+```
 
 
 
-# ss 
+## How To List Startup Services At Boot In Linux
+[How To List Startup Services At Boot In Linux](https://ostechnix.com/how-to-list-startup-services-at-boot-in-linux/)
+```bash
+sudo systemctl list-unit-files --type=service
 
+# To list only the enabled services at system boot, run:
+sudo systemctl list-unit-files --type=service --state=enabled --all
+
+UNIT FILE                              STATE  
+autovt@.service                        enabled
+dbus-org.freedesktop.timesync1.service enabled
+getty@.service                         enabled
+networking.service                     enabled
+ssh.service                            enabled
+sshd.service                           enabled
+systemd-timesyncd.service              enabled
+
+7 unit files listed.
+
+# To list only the disabled services at system boot, run:
+connorstom@penguin:~$ sudo systemctl list-unit-files --type=service --state=disabled --all
+UNIT FILE                              STATE   
+cros-sftp.service                      disabled
+debug-shell.service                    disabled
+ifupdown-wait-online.service           disabled
+nftables.service                       disabled
+rtkit-daemon.service                   disabled
+serial-getty@.service                  disabled
+systemd-boot-check-no-failures.service disabled
+systemd-resolved.service               disabled
+systemd-time-wait-sync.service         disabled
+
+9 unit files listed.
+
+# run the following command to list all services:
+
+connorstom@penguin:~$ sudo service --status-all
+ [ + ]  dbus
+ [ - ]  hwclock.sh
+ [ + ]  networking
+ [ + ]  procps
+ [ - ]  ssh
+ [ - ]  sudo
+ [ + ]  udev
+ [ - ]  x11-common
+
+# Here, the + indicates the service is running, and - indicates a stopped service. If you see ? in the output, the service state cannot be determined (for some reason).
+```
+## to stop a service **permanently** in debian
+[to stop a service **permanently** in debian](https://www.linuxquestions.org/questions/debian-26/chkconfig-equivalent-debian-346901/)
+```bash
+# using the 'update-rc.d' command which allows you to add/remove/set the symlinks in /etc/rc*.d that point to scripts in /etc/init.d.
+# To remove a script that starts a certain service run
+
+update-rc.d -f script_name remove
+
+# then you can keep or delete the corresponding script in /etc/init.d/
+```
 
 
 # systemctl status getty.target  
@@ -945,8 +1685,20 @@ ip.addr == 100.115.92.25
 
 
 
-
-# End of document 
+# End of document ###########
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
+##### End of document #################################################################################################
 
 
 # Trying various commands
@@ -984,27 +1736,6 @@ nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
 
 ```
 
-
-### How to install lsof
-```bash
-sudo apt-get update
-
-sudo apt-get install lsof
-
-sudo lsof -T | grep 2222
-
-netstat -tulpn
-```
-
-## lsof Command Example
-### Type the command as follows:
-```bash
-lsof -i :portNumber 
-lsof -i tcp:portNumber 
-lsof -i udp:portNumber 
-lsof -i :80
-lsof -i :80 | grep LISTEN
-```
 
 ### cat /proc/96/environ
 ```bash
@@ -1046,44 +1777,6 @@ support         1529/tcp                        # GNATS
 sane-port       6566/tcp        sane saned      # SANE network scanner daemon
 ```
 
-### sudo apt-get install nmap
-https://nmap.org/book/install.html#inst-already
-```bash
-connorstom@penguin:~/aprojects/network-traffic$ nmap --version
-Nmap version 7.70 ( https://nmap.org )
-Platform: x86_64-pc-linux-gnu
-Compiled with: liblua-5.3.3 openssl-1.1.1d libssh2-1.8.0 libz-1.2.11 libpcre-8.39 libpcap-1.8.1 nmap-libdnet-1.12 ipv6
-Compiled without:
-Available nsock engines: epoll poll select
-
-connorstom@penguin:~/aprojects/network-traffic$ nmap -A -T4 scanme.nmap.org
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-02 02:15 EST
-Nmap scan report for scanme.nmap.org (45.33.32.156)
-Host is up (0.093s latency).
-Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
-Not shown: 992 closed ports
-PORT      STATE    SERVICE      VERSION
-22/tcp    open     ssh          OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
-|   1024 ac:00:a0:1a:82:ff:cc:55:99:dc:67:2b:34:97:6b:75 (DSA)
-|   2048 20:3d:2d:44:62:2a:b0:5a:9d:b5:b3:05:14:c2:a6:b2 (RSA)
-|   256 96:02:bb:5e:57:54:1c:4e:45:2f:56:4c:4a:24:b2:57 (ECDSA)
-|_  256 33:fa:91:0f:e0:e1:7b:1f:6d:05:a2:b0:f1:54:41:56 (ED25519)
-25/tcp    filtered smtp
-80/tcp    open     http         Apache httpd 2.4.7 ((Ubuntu))
-|_http-server-header: Apache/2.4.7 (Ubuntu)
-|_http-title: Go ahead and ScanMe!
-135/tcp   filtered msrpc
-139/tcp   filtered netbios-ssn
-445/tcp   filtered microsoft-ds
-9929/tcp  open     nping-echo   Nping echo
-31337/tcp open     tcpwrapped
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 19.41 seconds
-```
-
 
 
 ### After reboot, Check what ip address is using port 2222 
@@ -1111,97 +1804,6 @@ tcp        0      0 127.0.0.1:40609         0.0.0.0:*               LISTEN      
 tcp        0      0 0.0.0.0:2222            0.0.0.0:*               LISTEN      -                   
 tcp6       0      0 :::2222                 :::*                    LISTEN      -                   
 udp        0      0 0.0.0.0:68              0.0.0.0:*                           -                   
-connorstom@penguin:~/aprojects/network-traffic$ sudo lsof -nP -i | grep 2222
-sshd      97       root    3u  IPv4   3664      0t0  TCP *:2222 (LISTEN)
-sshd      97       root    4u  IPv6   3666      0t0  TCP *:2222 (LISTEN)
-sshd     245       root    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
-sshd     255 connorstom    3u  IPv4   5074      0t0  TCP 100.115.92.195:2222->100.115.92.25:36440 (ESTABLISHED)
-```
-## Nightmare write-up by 0xEA31 about port 2222 exploits
-https://forum.hackthebox.eu/discussion/891/nightmare-write-up-by-0xea31
-
-## nmap fast check out my own ip_addr
-### nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
-```bash
-connorstom@penguin:~/aprojects/network-traffic$ nmap -T5 -p- -vvv -oA full_T5 100.115.92.195
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:28 EST
-Initiating Ping Scan at 03:28
-Scanning 100.115.92.195 [2 ports]
-Completed Ping Scan at 03:28, 0.00s elapsed (1 total hosts)
-Initiating Parallel DNS resolution of 1 host. at 03:28
-Completed Parallel DNS resolution of 1 host. at 03:28, 0.00s elapsed
-DNS resolution of 1 IPs took 0.00s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
-Initiating Connect Scan at 03:28
-Scanning penguin.lxd (100.115.92.195) [65535 ports]
-Discovered open port 2222/tcp on 100.115.92.195
-Completed Connect Scan at 03:28, 5.06s elapsed (65535 total ports)
-Nmap scan report for penguin.lxd (100.115.92.195)
-Host is up, received conn-refused (0.00033s latency).
-Scanned at 2020-12-03 03:28:04 EST for 5s
-Not shown: 65534 closed ports
-Reason: 65534 conn-refused
-PORT     STATE SERVICE      REASON
-2222/tcp open  EtherNetIP-1 syn-ack
-
-Read data files from: /usr/bin/../share/nmap
-Nmap done: 1 IP address (1 host up) scanned in 5.22 seconds
-```
-
-## nmap targeted (my own ip_id)
-### nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
-```bash 
-connorstom@penguin:~/aprojects/network-traffic$ nmap -A -p80,2222- -vvv -oA targeted 100.115.92.195
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-03 03:29 EST
-NSE: Loaded 148 scripts for scanning.
-NSE: Script Pre-scanning.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.00s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.00s elapsed
-Initiating Ping Scan at 03:29
-Scanning 100.115.92.195 [2 ports]
-Completed Ping Scan at 03:29, 0.00s elapsed (1 total hosts)
-Initiating Parallel DNS resolution of 1 host. at 03:29
-Completed Parallel DNS resolution of 1 host. at 03:29, 0.01s elapsed
-DNS resolution of 1 IPs took 0.01s. Mode: Async [#: 1, OK: 1, NX: 0, DR: 0, SF: 0, TR: 1, CN: 0]
-Initiating Connect Scan at 03:29
-Scanning penguin.lxd (100.115.92.195) [63315 ports]
-Discovered open port 2222/tcp on 100.115.92.195
-Completed Connect Scan at 03:29, 5.02s elapsed (63315 total ports)
-Initiating Service scan at 03:29
-Scanning 1 service on penguin.lxd (100.115.92.195)
-Completed Service scan at 03:29, 0.02s elapsed (1 service on 1 host)
-NSE: Script scanning 100.115.92.195.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.41s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.01s elapsed
-Nmap scan report for penguin.lxd (100.115.92.195)
-Host is up, received conn-refused (0.00053s latency).
-Scanned at 2020-12-03 03:29:28 EST for 5s
-Not shown: 63314 closed ports
-Reason: 63314 conn-refused
-PORT     STATE SERVICE REASON  VERSION
-2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
-| ssh-hostkey: 
-|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
-|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-NSE: Script Post-scanning.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.00s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 03:29
-Completed NSE at 03:29, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 6.95 seconds
 ```
 
 ### The usual key indicators of port 2222
@@ -1245,6 +1847,7 @@ Some Markdown text with <span style="color:yellow">some *yellow* text</span>
 Some Markdown text with <span style="color:magenta">some *magenta* text</span>
 
 
+## openssh-server
 ### SSH Penetration Testing (Port 22) 
 https://www.hackingarticles.in/ssh-penetration-testing-port-22/
 ```bash
@@ -1257,49 +1860,7 @@ openssh-server set to manually installed.
 0 upgraded, 0 newly installed, 0 to remove and 32 not upgraded.
 ```
 
-### nmap -sV -p2222 100.115.92.195
-```bash
-connorstom@penguin:~$ nmap -sV -p2222 100.115.92.195
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
-Nmap scan report for penguin.lxd (100.115.92.195)
-Host is up (0.00043s latency).
 
-PORT     STATE SERVICE VERSION
-2222/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 1.62 seconds
-```
-
-### nmap -sV -p22 100.115.92.195
-```bash
-connorstom@penguin:~$ nmap -sV -p22 100.115.92.195
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 00:33 EST
-Nmap scan report for penguin.lxd (100.115.92.195)
-Host is up (0.00027s latency).
-
-PORT   STATE  SERVICE VERSION
-22/tcp closed ssh
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 0.88 seconds
-```
-
-
-
-### dmesg | grep port
-```bash
-    2.305095] 8021q: 802.1Q VLAN Support v1.8
-[    2.305295] 9pnet: Installing 9P2000 support
-[    2.776671] maitred: Server listening on port 8888
-[    2.791686] maitred: Using startup listener port: 7777
-[   11.239029] lxdbr0: port 1(veth95d428a9) entered blocking state
-[   11.240340] lxdbr0: port 1(veth95d428a9) entered disabled state
-[   11.630945] cgroup: lxd (282) created nested cgroup for controller "memory" which has incomplete hierarchy support. Nested cgroups may change behavior in the future.
-[   11.666585] lxdbr0: port 1(veth95d428a9) entered blocking state
-[   11.666828] lxdbr0: port 1(veth95d428a9) entered forwarding state
-```
 
 ### edit /etc/ssh/sshd_config
 ```bash
@@ -1313,198 +1874,7 @@ LogLevel INFO  -- this was the default original value
 Gives the verbosity level that is used when logging messages from sshd(8). The possible values are: QUIET, FATAL, ERROR, INFO, VERBOSE, DEBUG, DEBUG1, DEBUG2, and DEBUG3. The default is INFO. DEBUG and DEBUG1 are equivalent. DEBUG2 and DEBUG3 each specify higher levels of debugging output. Logging with a DEBUG level violates the privacy of users and is not recommended.
 ```
 
-### nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
-```bash
-connorstom@penguin:~$ nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195
-Starting Nmap 7.70 ( https://nmap.org ) at 2020-12-04 16:01 EST
-NSE: Loaded 148 scripts for scanning.
-NSE: Script Pre-scanning.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.00s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.00s elapsed
-Initiating Parallel DNS resolution of 1 host. at 16:01
-Completed Parallel DNS resolution of 1 host. at 16:01, 0.02s elapsed
-Initiating Connect Scan at 16:01
-Scanning penguin.lxd (100.115.92.195) [65535 ports]
-Discovered open port 2222/tcp on 100.115.92.195
-Completed Connect Scan at 16:01, 6.22s elapsed (65535 total ports)
-Initiating Service scan at 16:01
-Scanning 1 service on penguin.lxd (100.115.92.195)
-Completed Service scan at 16:01, 0.02s elapsed (1 service on 1 host)
-NSE: Script scanning 100.115.92.195.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.20s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.01s elapsed
-Nmap scan report for penguin.lxd (100.115.92.195)
-Host is up, received user-set (0.00035s latency).
-Scanned at 2020-12-04 16:01:50 EST for 6s
-Not shown: 65534 closed ports
-Reason: 65534 conn-refused
-PORT     STATE SERVICE REASON  VERSION
-2222/tcp open  ssh     syn-ack OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
-| ssh-hostkey: 
-|   256 12:a8:2c:13:f8:7c:a7:e4:b5:40:c5:9a:d8:7a:e8:7a (ED25519)
-|_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIggM0IeRkTAbccYEuCLZVVyfYUzAi2OdxDmu6uhlb9j
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-NSE: Script Post-scanning.
-NSE: Starting runlevel 1 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.00s elapsed
-NSE: Starting runlevel 2 (of 2) scan.
-Initiating NSE at 16:01
-Completed NSE at 16:01, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 7.83 seconds
-```
-
-Nikto web server scanner  - https://cirt.net/Nikto2
-
-Full documentation - https://cirt.net/nikto2-docs/
-
-
-# Nikto Installation
-
-```bash
-# get the file
-test@ubuntu:~$ wget https://github.com/sullo/nikto/archive/master.zip
-```
-
-```bash
-# unzip into a directory, run
-test@ubuntu:~$ unzip master.zip
-test@ubuntu:~$ cd nikto-master/program
-test@ubuntu:~/nikto-master/program$ perl nikto.pl
-```
-
-### Starting a Nikto Web Scan
-```bash
-perl nikto.pl -host https://nikto-test.com
-```
-
-### Run nikto normally:
-
-```bash
-git clone https://github.com/sullo/nikto
-# Main script is in program/
-cd nikto/program
-# Run using the shebang interpreter
-./nikto.pl -h http://www.example.com
-# Run using perl (if you forget to chmod)
-perl nikto.pl -h http://www.example.com
-
-./nikto.pl -h $IPADDRESS
-```
-
-### Nikto Run as a Docker container:
-
-```bash
-git clone https://github.com/sullo/nikto.git
-cd nikto
-docker build -t sullo/nikto .
-# Call it without arguments to display the full help
-docker run --rm sullo/nikto
-# Basic usage
-docker run --rm sullo/nikto -h http://www.example.com
-# To save the report in a specific format, mount /tmp as a volume:
-docker run --rm -v $(pwd):/tmp sullo/nikto -h http://www.example.com -o /tmp/out.json
-```
-
-# ps -feww
-```bash
-# -ww    unlimited width
-# -ef    is the usual ps -ef
-# -e     Select all processes
-# -f     Do full-format listing
-# -H     Show process hierarchy (forest)
-ps -feww
-
-connorstom@penguin:~$ ps -Hf -p 2185,96,2211
-UID        PID  PPID  C STIME TTY          TIME CMD
-root        96     1  0 Dec04 ?        00:00:00 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
-root      2185    96  0 Dec04 ?        00:00:00   sshd: connorstom [priv]
-connors+  2211  2185  0 Dec04 ?        00:00:00     sshd: connorstom@notty
-
-```
-
-# pstree
-```bash
-connorstom@penguin:/proc/2185$ pstree
-systemd─┬─agetty
-        ├─dbus-daemon
-        ├─dhclient
-        ├─polkitd───2*[{polkitd}]
-        ├─sshd───sshd───sshd───sshd
-        ├─systemd─┬─(sd-pam)
-        │         ├─at-spi-bus-laun─┬─dbus-daemon
-        │         │                 └─3*[{at-spi-bus-laun}]
-        │         ├─at-spi2-registr───2*[{at-spi2-registr}]
-        │         ├─dbus-daemon
-        │         ├─gnome-keyring-d───3*[{gnome-keyring-d}]
-        │         ├─2*[ld-linux-x86-64───ld-linux-x86-64───4*[{ld-linux-x86-64}]]
-        │         ├─2*[ld-linux-x86-64]
-        │         └─ld-linux-x86-64─┬─code─┬─code───code───5*[{code}]
-        │                           │      ├─code
-        │                           │      ├─code───6*[{code}]
-        │                           │      ├─code─┬─bash
-        │                           │      │      ├─code─┬─code───7*[{code}]
-        │                           │      │      │      └─16*[{code}]
-        │                           │      │      ├─code───11*[{code}]
-        │                           │      │      └─20*[{code}]
-        │                           │      ├─code─┬─bash───pstree
-        │                           │      │      ├─code───16*[{code}]
-        │                           │      │      └─20*[{code}]
-        │                           │      ├─code─┬─bash
-        │                           │      │      ├─code───16*[{code}]
-        │                           │      │      └─19*[{code}]
-        │                           │      ├─code───18*[{code}]
-        │                           │      └─30*[{code}]
-        │                           ├─ld-linux-x86-64───bash
-        │                           └─10*[{ld-linux-x86-64}]
-        ├─systemd-journal
-        ├─systemd-logind
-        └─systemd-udevd
-```
-
-### pstree -a
-```bash
-# -a Show command line arguments
-connorstom@penguin:/proc/2185$ pstree -a
-systemd
-  ├─agetty -o -p -- \\u --noclear --keep-baud console 115200,38400,9600 vt220
-  ├─dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-  ├─dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df/var/lib/dhcp/dhclient6.eth0.lea
-  ├─polkitd --no-debug
-  │   └─2*[{polkitd}]
-  ├─sshd -D -f /dev/.ssh/sshd_config
-  │   └─sshd                      
-  │       └─sshd                       
-  │           └─sshd               
-  ├─systemd --user
-  │   ├─(sd-pam)  
-  │   ├─at-spi-bus-laun
-  │   │   ├─dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 3
-  │   │   └─3*[{at-spi-bus-laun}]
-  │   ├─at-spi2-registr --use-gnome-session
-  │   │   └─2*[{at-spi2-registr}]
-  │   ├─dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-  │   ├─gnome-keyring-d --start --foreground --components=secrets
-  │   │   └─3*[{gnome-keyring-d}]
-  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
-  │   │   └─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
-  │   │       └─4*[{ld-linux-x86-64}]
-  │   ├─ld-linux-x86-64 --library-path /opt/google/cros-containers/bin/../lib--inhibit-rpath
-  ├─systemd-journal
-  ├─systemd-logind
-  └─systemd-udevd
-```
 # Misc
 ### ls -al /proc/
 ```bash
@@ -1518,83 +1888,6 @@ Most reliable way is to look at the /proc dir for the process. Each process has 
 `cmdline` read it to see what command line was used to start the process
 `environ` the environment variables for that process
 `root` a link to what the process considers its root dir (it will be / unless chrooted)
-```
-
-### sudo ss -lptn 'sport = :2222'
-```bash
-connorstom@penguin:/proc/2185$ sudo ss -lptn 'sport = :2222'
-State       Recv-Q      Send-Q           Local Address:Port            Peer Address:Port                                         
-LISTEN      0           128                    0.0.0.0:2222                 0.0.0.0:*          users:(("sshd",pid=96,fd=3))      
-LISTEN      0           128                       [::]:2222                    [::]:*          users:(("sshd",pid=96,fd=4))  
-```
-
-### socket statistics command (i.e. ss) 
-```bash
-# Here is an example of execution:
-
-connorstom@penguin:/proc/2185$ ss -tanp | grep '222\|State'
-State    Recv-Q   Send-Q        Local Address:Port         Peer Address:Port                       
-LISTEN   0        128                 0.0.0.0:2222              0.0.0.0:*            
-ESTAB    0        0            100.115.92.195:2222        100.115.92.25:33504
-LISTEN   0        128                    [::]:2222                 [::]:*     
-```
-# Socat
-### socat/EXAMPLES
-https://github.com/craSH/socat/blob/master/EXAMPLES
-```bash
-# socat- [network-traffic](#network-traffic)
-
-# multipurpose relay for bidirectional data transfer
-
-# Socat (for SOcket CAT) establishes two bidirectional byte streams and transfers data between them. 
-
-# Data channels may be files, pipes, devices (terminal or modem, etc.), or sockets (Unix, IPv4, IPv6, raw, UDP, TCP, SSL).
-
-#Examples of using socat
-#Let's get started with some basic examples of using socat for various connections.
-
-1. Connect to TCP port 80 on the local or remote system:
-
-# socat - TCP4:www.example.com:80
-In this case, socat transfers data between STDIO (-) and a TCP4 connection to port 80 on a host named www.example.com.
-
-2. Use socat as a TCP port forwarder:
-
-For a single connection, enter:
-
-# socat TCP4-LISTEN:81 TCP4:192.168.1.10:80
-For multiple connections, use the fork option as used in the examples below:
-
-# socat TCP4-LISTEN:81,fork,reuseaddr TCP4:TCP4:192.168.1.10:80
-This example listens on port 81, accepts connections, and forwards the connections to port 80 on the remote host.
-
-# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock 
-The above example listens on port 3307, accepts connections, and forwards the connections to a Unix socket on the remote host.
-
-3. Implement a simple network-based message collector:
-
-# socat -u TCP4-LISTEN:3334,reuseaddr,fork OPEN:/tmp/test.log,creat,append
-In this example, when a client connects to port 3334, a new child process is generated. All data sent by the clients is appended to the file /tmp/test.log. If the file does not exist, socat creates it. The option reuseaddr allows an immediate restart of the server process.
-
-4. Send a broadcast to the local network:
-
-# socat - UDP4-DATAGRAM:224.255.0.1:6666,bind=:6666,ip-add-membership=224.255.0.1:eth0
-In this case, socat transfers data from stdin to the specified multicast address using UDP over port 6666 for both the local and remote connections. The command also tells the interface eth0 to accept multicast packets for the given group.
-
-Practical uses for socat
-Socat is a great tool for troubleshooting. It is also handy for easily making remote connections. Practically, I have used socat for remote MySQL connections. In the example below, I demonstrate how I use socat to connect my web application to a remote MySQL server by connecting over the local socket.
-
-1. On my remote MySQL server, I enter:
-
-# socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock &
-This command starts socat and configures it to listen by using port 3307.
-
-2. On my webserver, I enter:
-
-# socat UNIX-LISTEN:/var/lib/mysql/mysql.sock,fork,reuseaddr,unlink-early,user=mysql,group=mysql,mode=777 TCP:192.168.100.5:3307 &
-The above command connects to the remote server 192.168.100.5 by using port 3307.
-
-However, all communication will be done on the Unix socket /var/lib/mysql/mysql.sock, and this makes it appear to be a local server.
 ```
 
 ### When did a process first start?   ps -eo pid,lstart,cmd
@@ -1671,319 +1964,6 @@ voluntary_ctxt_switches:        26
 nonvoluntary_ctxt_switches:     118
 ```
 
-# README-create-debian-startup-script.md
-https://gist.github.com/drmalex07/298ab26c06ecf401f66c
-
-The following is mostly taken from the example published at https://mkaz.com/2013/07/03/run-script-at-start-on-debian/
-
-Write an init.d script according to the the dependency-booting specification (see at https://wiki.debian.org/LSBInitScripts)
-```bash
-# say it foo.sh 
-# Place the script under /etc/init.d.
-
-ln -s /root/scripts/foo.sh /etc/init.d/foo 
-
-# Update the runlevel directories under /etc/rc*:
-
-update-rc.d foo defaults
-```
-
-```bash
-# foo.sh
-#! /bin/bash
-
-### BEGIN INIT INFO
-# Provides:          foo
-# Required-Start:    $local_fs $network
-# Required-Stop:     $local_fs
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: foo service
-# Description:       Run Foo service
-### END INIT INFO
-
-# Carry out specific functions when asked to by the system
-case "$1" in
-  start)
-    echo "Starting Foo..."
-    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./start-foo.sh'
-    ;;
-  stop)
-    echo "Stopping Foo..."
-    sudo -u foo-user bash -c 'cd /path/to/scripts/ && ./stop-foo.sh'
-    sleep 2
-    ;;
-  *)
-    echo "Usage: /etc/init.d/foo {start|stop}"
-    exit 1
-    ;;
-esac
-
-exit 0
-```
-
-## Debian Boot Process 
-## Get To Know Linux: The /etc/init.d Directory
-```bash
-# If you look at the /etc directory you will find directories that are in the form rc#.d 
-# (Where # is a number reflects a specific initialization level - from 0 to 6). 
-# Within each of these directories is a number of other scripts that control processes. 
-# These scripts will either begin with a "K" or an "S". All "K" scripts are run before "S" scripts. 
-# And depending upon where the scripts are located will determine when the scripts initiate.
-```
-
-### All scripts executed by the init system are located in the directory /etc/init.d/
-https://wiki.debian.org/BootProcess
-```bash
-The meanings of all the runlevels are as follows:
-
-runlevel    directory           meaning
-N           none                System bootup (NONE). There is no /etc/rcN.d/ directory.
-0           /etc/rc0.d/         Halt the system.
-S           /etc/rcS.d/         Single-user mode on boot. The lower case s can be used as alias.
-1           /etc/rc1.d/         Single-user mode switched from multi-user mode.
-2 ... 5     /etc/rc{2,3,4,5}.d/ Multi-user mode. The Debian system does not pre-assign any special meaning differences among these.
-6           /etc/rc6.d/         Reboot the system.
-7 ... 9     /etc/rc{7,8,9}.d/   Valid multi-user mode but traditional Unix variants don’t use. 
-
-The configuration decision on the use of the runlevels between 2 and 5, is solely left to the system administrator on the Debian system.
-```
-
-## init. d contains the start/stop scripts the daemon while the system is running or during boot 
-```bash
-# d is the sub-directory of /etc directory in Linux file system. 
-# init. d basically contains the bunch of start/stop scripts which are used to control 
-# (start,stop,reload,restart) the daemon while the system is running or during boot.
-```
-
-### Get To Know Linux: The /etc/init.d Directory
-https://www.ghacks.net/2009/04/04/get-to-know-linux-the-etcinitd-directory/
-
-In order to control any of the scripts in init.d manually you have to have root (or sudo) access. Each script will be run as a command and the structure of the command will look like:
-
-```bash
-/etc/init.d/command OPTION
-```
-
-Where command is the actual command to run and OPTION can be one of the following:
-
-- start
-- stop
-- reload
-- restart
-- force-reload
-  
-Most often you will use either start, stop, or restart. So if you want to stop your network you can issue the command:
-
-```bash
-/etc/init.d/networking stop
-```
-
-Or if you make a change to your network and need to restart it, you could do so with the following command:
-
-```bash
-/etc/init.d/networking restart
-```
-
-Some of the more common init scripts in this directory are:
-
-- networking
-- samba
-- apache2
-- ftpd
-- sshd
-- dovecot
-- mysql
-  
-Of course there may be more often-used scripts in your directory - it depends upon what you have installed. The above list was taken from a Ubuntu Server 8.10 installation so a standard desktop installation would have a few less networking-type scripts.
-
-** But what about /etc/rc.local **
-
-There is a third option that I used to use quite a bit. This option is the /etc/rc.local script. This file runs after all other init level scripts have run, so it's safe to put various commands that you want to have issued upon startup. Many times I will place mounting instructions for things like nfs in this script. This is also a good place to place "troubleshooting" scripts in. For instance, once I had a machine that, for some reason, samba seemed to not want to start. Even afer checking to make sure the Samba daemon was setup to initialize at boot up. So instead of spending all of my time up front with this I simply placed the line:
-
-```bash
-/etc/init.d/samba start
-```
-
-in the /etc/rc.local script and Samba worked like a charm. Eventually I would come back and trouble shoot this issue.
-
-
-here is text
-# Linux Runlevel programs
-https://www.thegeekstuff.com/2011/02/linux-boot-process/
-- When the Linux system is booting up, you might see various services getting started. For example, it might say “starting sendmail …. OK”. Those are the runlevel programs, executed from the run level directory as defined by your run level.
-- Depending on your default init level setting, the system will execute the programs from one of the following directories.
-  - Run level 0 – /etc/rc.d/rc0.d/
-  - Run level 1 – /etc/rc.d/rc1.d/
-  - Run level 2 – /etc/rc.d/rc2.d/
-  - Run level 3 – /etc/rc.d/rc3.d/
-  - Run level 4 – /etc/rc.d/rc4.d/
-  - Run level 5 – /etc/rc.d/rc5.d/
-  - Run level 6 – /etc/rc.d/rc6.d/
-- Please note that there are also symbolic links available for these directory under /etc directly. So, /etc/rc0.d is linked to /etc/rc.d/rc0.d.
-- Under the /etc/rc.d/rc*.d/ directories, you would see programs that start with S and K.
-- Programs starts with S are used during startup. S for startup.
-- Programs starts with K are used during shutdown. K for kill.
-- There are numbers right next to S and K in the program names. Those are the sequence number in which the programs should be started or killed.
-- For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. S80sendmail is to start the sendmail daemon, which has the sequence number of 80. So, syslog program will be started before sendmail.
-
-# Chart: systemctl vs service tools 
-<br/>
-<p align="center">
- <img width="800px" src="https://github.com/coding-to-music/network-traffic/blob/main/systemctl-vs-service-tools.png?raw=true" align="center" alt="systemctl vs service tools" />
-<br/>
-&nbsp;
-
-### systemctl status 2185
-```bash
-connorstom@penguin:/proc/2185$ systemctl status 2185
-● session-3.scope - Session 3 of user connorstom
-   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
-Transient: yes
-   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 2h 11min ago
-    Tasks: 3
-   Memory: 1.3M
-   CGroup: /user.slice/user-1000.slice/session-3.scope
-           ├─2185 sshd: connorstom [priv]
-           ├─2211 sshd: connorstom@notty
-           └─2215 sshd: connorstom@internal-sftp
-```
-
-# systemctl
-### systemctl status 2185
-```bash
-connorstom@penguin:/proc/2185$ systemctl status 2185
-● session-3.scope - Session 3 of user connorstom
-   Loaded: loaded (/run/systemd/transient/session-3.scope; transient)
-Transient: yes
-   Active: active (running) since Fri 2020-12-04 23:49:07 EST; 1h 56min ago
-    Tasks: 3
-   Memory: 1.3M
-   CGroup: /user.slice/user-1000.slice/session-3.scope
-           ├─2185 sshd: connorstom [priv]
-           ├─2211 sshd: connorstom@notty
-           └─2215 sshd: connorstom@internal-sftp
-```
-
-### systemctl status $(pgrep perl)
-```bash
-connorstom@penguin:/proc/2185$ systemctl status $(pgrep perl)
-● penguin
-    State: running
-     Jobs: 0 queued
-   Failed: 0 units
-    Since: Fri 2020-12-04 15:20:14 EST; 10h ago
-   CGroup: /
-           ├─user.slice
-           │ └─user-1000.slice
-           │   ├─user@1000.service
-           │   │ ├─sommelier\x2dx.slice
-           │   │ │ ├─sommelier-x@1.service
-           │   │ │ │ ├─143 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ │ └─176 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ └─sommelier-x@0.service
-           │   │ │   ├─146 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │   └─177 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ ├─sommelier.slice
-           │   │ │ ├─sommelier@0.service
-           │   │ │ │ └─160 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ │ └─sommelier@1.service
-           │   │ │   └─148 /opt/google/cros-containers/bin/../lib/ld-linux-x86-64.so.2 --library-path /opt/google/cros-containers
-           │   │ ├─init.scope
-           │   │ │ ├─ 98 /lib/systemd/systemd --user
-           │   │ │ └─101 (sd-pam)
-           │   │ ├─at-spi-dbus-bus.service
-           │   │ │ ├─398 /usr/lib/at-spi2-core/at-spi-bus-launcher
-           │   │ │ ├─403 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-addre
-           │   │ │ └─405 /usr/lib/at-spi2-core/at-spi2-registryd --use-gnome-session
-           │   │ └─dbus.service
-           │   │   ├─397 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-onl
-           │   │   └─574 /usr/bin/gnome-keyring-daemon --start --foreground --components=secrets
-           │   └─session-3.scope
-           │     ├─2185 sshd: connorstom [priv]
-           │     ├─2211 sshd: connorstom@notty
-           │     └─2215 sshd: connorstom@internal-sftp
-           ├─init.scope
-           │ └─1 /sbin/init
-           └─system.slice
-             ├─systemd-udevd.service
-             │ └─45 /lib/systemd/systemd-udevd
-             ├─networking.service
-             │ └─71 /sbin/dhclient -4 -v -i -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases -I -df /var/lib/dhc
-             ├─polkit.service
-             │ └─259 /usr/lib/policykit-1/polkitd --no-debug
-             ├─systemd-journald.service
-             │ └─36 /lib/systemd/systemd-journald
-             ├─console-getty.service
-             │ └─95 /sbin/agetty -o -p -- \u --noclear --keep-baud console 115200,38400,9600 vt220
-             ├─cros-sftp.service
-             │ └─96 /usr/sbin/sshd -D -f /dev/.ssh/sshd_config
-             ├─dbus.service
-             │ └─63 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
-             └─systemd-logind.service
-               └─64 /lib/systemd/systemd-logind
-```
-
-
-
-## How To List Startup Services At Boot In Linux
-[How To List Startup Services At Boot In Linux](https://ostechnix.com/how-to-list-startup-services-at-boot-in-linux/)
-```bash
-sudo systemctl list-unit-files --type=service
-
-# To list only the enabled services at system boot, run:
-sudo systemctl list-unit-files --type=service --state=enabled --all
-
-UNIT FILE                              STATE  
-autovt@.service                        enabled
-dbus-org.freedesktop.timesync1.service enabled
-getty@.service                         enabled
-networking.service                     enabled
-ssh.service                            enabled
-sshd.service                           enabled
-systemd-timesyncd.service              enabled
-
-7 unit files listed.
-
-# To list only the disabled services at system boot, run:
-connorstom@penguin:~$ sudo systemctl list-unit-files --type=service --state=disabled --all
-UNIT FILE                              STATE   
-cros-sftp.service                      disabled
-debug-shell.service                    disabled
-ifupdown-wait-online.service           disabled
-nftables.service                       disabled
-rtkit-daemon.service                   disabled
-serial-getty@.service                  disabled
-systemd-boot-check-no-failures.service disabled
-systemd-resolved.service               disabled
-systemd-time-wait-sync.service         disabled
-
-9 unit files listed.
-
-# run the following command to list all services:
-
-connorstom@penguin:~$ sudo service --status-all
- [ + ]  dbus
- [ - ]  hwclock.sh
- [ + ]  networking
- [ + ]  procps
- [ - ]  ssh
- [ - ]  sudo
- [ + ]  udev
- [ - ]  x11-common
-
-# Here, the + indicates the service is running, and - indicates a stopped service. If you see ? in the output, the service state cannot be determined (for some reason).
-```
-## to stop a service **permanently** in debian
-[to stop a service **permanently** in debian](https://www.linuxquestions.org/questions/debian-26/chkconfig-equivalent-debian-346901/)
-```bash
-# using the 'update-rc.d' command which allows you to add/remove/set the symlinks in /etc/rc*.d that point to scripts in /etc/init.d.
-# To remove a script that starts a certain service run
-
-update-rc.d -f script_name remove
-
-# then you can keep or delete the corresponding script in /etc/init.d/
-```
 
 
 ###
