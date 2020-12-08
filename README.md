@@ -158,29 +158,32 @@ https://www.speedguide.net/port.php?port=2222
  
 
 # Overview of commands and purpose
-cat /proc/96/environ
-dsmeg  
-fd-find  
-fuser  
-ls -l /proc/96/ext # working dir of a process  
-lsof  
-ncat  
-netstat  
-nikto  
-nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195  
-ps -aux  
-ps -eo pid,lstart,cmd # When did a process first start?  
-ps -feww  
-pstree  
-socat  
-ss  
-sudo journalctl -u getty.target  
-sudo journalctl | grep 2222  
-systemctl status getty.target  
-systemd journal files  
-tcpdump  
-whatis  
-wireshark  
+
+| command | Description and Comment |
+|---------|-------------------------|
+| cat /proc/96/environ | textHere | 
+| dsmeg |  textHere | 
+| fd-find | textHere | 
+| fuser | textHere | 
+| sudo journalctl -u getty.target | textHere |  
+| sudo journalctl | grep 2222 | textHere | 
+| ls -l /proc/96/ext # working dir of a process | textHere | 
+| lsof  | textHere | 
+| ncat  | textHere | 
+| netstat | textHere | 
+| nikto | textHere | 
+| nmap -vv --reason -Pn -A --osscan-guess --version-all -p- 100.115.92.195 | textHere |    
+| ps -aux | textHere | 
+| ps -eo pid,lstart,cmd | When did a process first start? | textHere |    
+| ps -feww | textHere | 
+| pstree | textHere | 
+| socat | textHere | 
+| ss | textHere | 
+| systemctl status getty.target | textHere |  
+| systemd journal files | textHere | 
+| tcpdump | textHere | 
+| whatis | textHere | 
+| wireshark | textHere | 
 
 
 
